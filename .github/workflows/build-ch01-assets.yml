@@ -1,0 +1,52 @@
+name: Build chapter image assets
+
+on:
+  push:
+    paths:
+      - 'assets/ch01/generated-src/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Wait for complete upload
+        run: |
+          if [ ! -f assets/ch01/generated-src/READY ]; then
+            echo "Image chunks are still being uploaded."
+            exit 0
+          fi
+
+      - name: Rebuild AVIF assets
+        if: ${{ hashFiles('assets/ch01/generated-src/READY') != '' }}
+        run: |
+          set -euo pipefail
+          mkdir -p assets/ch01/generated
+          for name in distribution-1985 unit-life-radius wanyuan-1985 four-paths-1985; do
+            cat assets/ch01/generated-src/$name/part-*.b64 | base64 --decode > assets/ch01/generated/$name.avif
+          done
+
+          test "$(stat -c%s assets/ch01/generated/distribution-1985.avif)" -eq 10435
+          test "$(stat -c%s assets/ch01/generated/unit-life-radius.avif)" -eq 12142
+          test "$(stat -c%s assets/ch01/generated/wanyuan-1985.avif)" -eq 8445
+          test "$(stat -c%s assets/ch01/generated/four-paths-1985.avif)" -eq 9973
+
+          rm -rf assets/ch01/generated-src
+
+      - name: Commit rebuilt assets
+        if: ${{ hashFiles('assets/ch01/generated-src/READY') != '' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A assets/ch01
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "build valid chapter 1 image assets"
+          git push
