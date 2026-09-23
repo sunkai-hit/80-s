@@ -72,3 +72,27 @@ HTML与出版物建议统一标注：
 | Standard Airmail Envelope of Mainland China in 1978 | Public Domain | 航空信封史料 |
 
 详细来源和原图URL见：assets/ch01/historical/README.md
+
+
+---
+
+# 第一章 Web V2.0 最终视觉权利记录
+
+| 资产 | 年份 | 作者/机构 | 权利状态 | 用途 |
+|---|---:|---|---|---|
+| Beijing, China 1988 (5) | 1988 | Derzsi Elekes Andor | CC BY-SA 3.0 | 章节扉页近年代城市生活背景 |
+| 西宁大十字1985 | 1985 | Pieceofmetalwork | CC BY-SA 4.0 | 市场与自行车图文页 |
+| China1982-326 | 1982 | H. Grobe | CC BY-SA 3.0 | 青年服装时代影像页 |
+| Bicyclists in China, 1987 | 1987 | GeorgeLouis / BeenAroundAWhile | CC BY-SA 3.0 | 公共空间与自行车 |
+| HKMH cassette recorder | 展品为80年代初 | Mk2010 | CC BY-SA 3.0 | 录音机实物页 |
+| Standard Airmail Envelope of Mainland China in 1978 | 1978 | 国家标准总局 | Public Domain | 海外来信时代翻译 |
+| State Council Gazette 1985 Issue 15 | 1985 | 中华人民共和国国务院 | PD-PRC-exempt / Public Domain | “包分配”时代翻译 |
+| unit-life-map.svg | 2026 | 本项目编辑视觉 | 项目自制 | 单位生活半径 |
+| four-objects.svg | 2026 | 本项目编辑视觉 | 项目自制 | 四件东西 / 四种人生 |
+
+## 展示边界
+
+- 历史照片均明确标注为“时代照片/时代影像”，不暗示照片中的人物就是本章虚构角色。
+- 1988北京照片只作为接近年代的城市生活背景，不声称其拍摄于1985。
+- 国家标准航空信封只用于解释邮政实物形态，不冒充故事里那封美国来信。
+- 编辑视觉使用“解释/收束”定位，不标注为历史照片。
