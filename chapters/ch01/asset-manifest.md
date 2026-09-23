@@ -92,3 +92,18 @@ V2视觉策略：
 - “四种人生”是叙事场景复原，不是历史现场照片。
 
 旧 SVG 文件继续保留在仓库作为版本历史，但 HTML 引用数为 0。
+
+
+## V3.1 二进制资产修复
+
+V3.0 首次尝试通过连接器直接提交 image2 二进制时出现截断，已在 V3.1 完全修复。
+
+最终正式文件：
+- assets/ch01/generated/distribution-1985.avif — 10435 bytes
+- assets/ch01/generated/unit-life-radius.avif — 12142 bytes
+- assets/ch01/generated/wanyuan-1985.avif — 8445 bytes
+- assets/ch01/generated/four-paths-1985.avif — 9973 bytes
+
+四个文件均由 GitHub 端读取完整 base64 分块后重新生成，提交前已核对解码字节数与本地压缩母版一致。
+
+HTML 已全部切换到上述 .avif 文件。
