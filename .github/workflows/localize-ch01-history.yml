@@ -21,7 +21,7 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          from urllib.parse import quote
+          from urllib.parse import unquote, urlencode
           from urllib.request import Request, urlopen
           import time
 
@@ -50,8 +50,13 @@ jobs:
 
           def fetch_via_proxy(source):
               # One-time transport only. The final site never depends on this proxy.
-              raw = source.replace("https://", "")
-              proxy = "https://images.weserv.nl/?url=" + quote(raw, safe="/:%(),_-") + "&w=1800&output=jpg&q=90"
+              raw = unquote(source).replace("https://", "")
+              proxy = "https://images.weserv.nl/?" + urlencode({
+                  "url": raw,
+                  "w": "1800",
+                  "output": "jpg",
+                  "q": "90",
+              })
               req = Request(proxy, headers={
                   "User-Agent": "Mozilla/5.0 80-s-book-project/1.0",
                   "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
