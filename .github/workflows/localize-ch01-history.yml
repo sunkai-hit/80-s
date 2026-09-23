@@ -1,0 +1,86 @@
+name: Localize chapter 1 historical images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/localize-ch01-history.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  localize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download historical images and rewrite HTML
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+
+          items = {
+              "https://upload.wikimedia.org/wikipedia/commons/6/6c/Beijing%2C_China_1988_%285%29.jpg":
+                  "assets/ch01/historical/beijing-1988.jpg",
+              "https://upload.wikimedia.org/wikipedia/commons/f/f7/China1982-326.jpg":
+                  "assets/ch01/historical/youth-fashion-1982.jpg",
+              "https://upload.wikimedia.org/wikipedia/commons/9/9a/Bicyclists_in_China%2C_1987.jpg":
+                  "assets/ch01/historical/bicyclists-1987.jpg",
+              "https://upload.wikimedia.org/wikipedia/commons/2/20/HKMH_-_The_Flavours_of_Everyday_Life_in_China_%28cassette_recorder%29.jpg":
+                  "assets/ch01/historical/cassette-recorder.jpg",
+              "https://upload.wikimedia.org/wikipedia/commons/7/7b/Standard_Airmail_Envelope_of_Mainland_China_in_1978.jpg":
+                  "assets/ch01/historical/airmail-envelope-1978.jpg",
+          }
+
+          for url, target in items.items():
+              p = Path(target)
+              p.parent.mkdir(parents=True, exist_ok=True)
+              req = Request(url, headers={"User-Agent": "80-s-book-project/1.0"})
+              with urlopen(req, timeout=60) as r:
+                  data = r.read()
+              if len(data) < 5000:
+                  raise RuntimeError(f"Downloaded file too small: {target} ({len(data)} bytes)")
+              p.write_bytes(data)
+              print(target, len(data))
+
+          html_path = Path("web/ch01/index.html")
+          html = html_path.read_text(encoding="utf-8")
+          for url, target in items.items():
+              local = "../../" + target
+              if url not in html:
+                  raise RuntimeError(f"Expected URL not found in HTML: {url}")
+              html = html.replace(url, local)
+          html_path.write_text(html, encoding="utf-8")
+
+          leftovers = [u for u in items if u in html]
+          if leftovers:
+              raise RuntimeError(f"Remote Wikimedia URLs remain: {leftovers}")
+
+          readme = Path("assets/ch01/historical/README.md")
+          existing = readme.read_text(encoding="utf-8") if readme.exists() else "# 第一章历史视觉素材\n"
+          marker = "\n## 本地化状态\n"
+          if marker not in existing:
+              existing += marker + "\n以上正式采用的历史视觉已下载到本目录；HTML只引用本地相对路径。原始来源、作者和许可说明保留在本文件及页面图注中。\n"
+          readme.write_text(existing, encoding="utf-8")
+          PY
+
+      - name: Verify no Wikimedia image hotlinks remain
+        run: |
+          if grep -q "https://upload.wikimedia.org/" web/ch01/index.html; then
+            echo "Remote Wikimedia image URL still present"
+            exit 1
+          fi
+          find assets/ch01/historical -maxdepth 1 -type f -print -exec wc -c {} \;
+
+      - name: Commit localized assets
+        run: |
+          git config user.name "80-s book automation"
+          git config user.email "actions@users.noreply.github.com"
+          git add assets/ch01/historical web/ch01/index.html
+          git rm .github/workflows/localize-ch01-history.yml
+          git commit -m "localize chapter 1 historical images"
+          git push origin main
