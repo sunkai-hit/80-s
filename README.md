@@ -16,21 +16,32 @@
 - 历史细节只在影响人物理解和选择时进入正文。
 - 年轻读者不理解的制度，由“时代翻译”承担。
 - 真实史料优先于 AI 场景复原。
-- HTML 只负责组装已经确认的文字与视觉资产，不在 HTML 阶段临时创造内容。\n- 正式 HTML 的所有图片必须先本地化到仓库，禁止运行时外链历史图片或图床。
+- HTML 只负责组装已经确认的文字与视觉资产，不在 HTML 阶段临时创造内容。- 正式 HTML 的所有图片必须先本地化到仓库，禁止运行时外链历史图片或图床。
 - 真实史料与 AI 复原图必须明确区分。
 
 ## 工作流
 
-1. 写作 Draft
-2. 历史考据 Research
-3. 正文锁定 Content Locked
-4. 视觉脚本 Visual Script
-5. 史料搜集 Historical Assets
-6. AI 场景复原（仅在必要时）
-7. 信息图制作
-8. 视觉审核 Visual Locked
-9. HTML 组装
-10. 网页审阅并反向修订
+全书统一生产流程以 **[WORKFLOW.md](WORKFLOW.md)** 为唯一基线。
+
+简化阶段：
+
+1. 章节策划
+2. 正文 Draft
+3. 历史考据 Research
+4. Content Locked
+5. Visual Script
+6. Historical Assets + 版权审查
+7. 图片本地化
+8. image2 / 编辑视觉制作
+9. Visual Locked
+10. Page Script
+11. HTML Assembly
+12. 自动检查
+13. Web Review
+14. 反向修订
+15. FINAL
+
+> 后续章节默认连续执行到整章完成；只有重大内容取舍、历史争议、版权不可用或整体风格改变时才中途确认。
 
 ## 当前状态
 
@@ -40,6 +51,7 @@
 - 下一步：用户审阅第一章 Web V2.0；确认后进入第二章生产
 
 详见：
+- [统一生产工作流](WORKFLOW.md)
 - [项目说明](PROJECT.md)
 - [全书目录](book/outline.md)
 - [文字规范](book/style-guide.md)
