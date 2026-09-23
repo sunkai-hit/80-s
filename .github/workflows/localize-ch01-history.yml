@@ -17,70 +17,71 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download historical images through cache proxy
+      - name: Download historical images from Wikimedia thumbnail service
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          from urllib.parse import unquote, urlencode
+          from urllib.parse import urlencode
           from urllib.request import Request, urlopen
           import time
 
           items = [
               (
                   "https://upload.wikimedia.org/wikipedia/commons/6/6c/Beijing%2C_China_1988_%285%29.jpg",
+                  "Beijing, China 1988 (5).jpg",
                   "assets/ch01/historical/beijing-1988.jpg",
               ),
               (
                   "https://upload.wikimedia.org/wikipedia/commons/f/f7/China1982-326.jpg",
+                  "China1982-326.jpg",
                   "assets/ch01/historical/youth-fashion-1982.jpg",
               ),
               (
                   "https://upload.wikimedia.org/wikipedia/commons/9/9a/Bicyclists_in_China%2C_1987.jpg",
+                  "Bicyclists in China, 1987.jpg",
                   "assets/ch01/historical/bicyclists-1987.jpg",
               ),
               (
                   "https://upload.wikimedia.org/wikipedia/commons/2/20/HKMH_-_The_Flavours_of_Everyday_Life_in_China_%28cassette_recorder%29.jpg",
+                  "HKMH - The Flavours of Everyday Life in China (cassette recorder).jpg",
                   "assets/ch01/historical/cassette-recorder.jpg",
               ),
               (
                   "https://upload.wikimedia.org/wikipedia/commons/7/7b/Standard_Airmail_Envelope_of_Mainland_China_in_1978.jpg",
+                  "Standard Airmail Envelope of Mainland China in 1978.jpg",
                   "assets/ch01/historical/airmail-envelope-1978.jpg",
               ),
           ]
 
-          def fetch_via_proxy(source):
-              # One-time transport only. The final site never depends on this proxy.
-              raw = unquote(source).replace("https://", "")
-              proxy = "https://images.weserv.nl/?" + urlencode({
-                  "url": raw,
+          def fetch_thumb(filename):
+              url = "https://commons.wikimedia.org/w/thumb.php?" + urlencode({
+                  "f": filename,
                   "w": "1800",
-                  "output": "jpg",
-                  "q": "90",
               })
-              req = Request(proxy, headers={
-                  "User-Agent": "Mozilla/5.0 80-s-book-project/1.0",
+              req = Request(url, headers={
+                  "User-Agent": "80-s-book-project/1.0 (historical image archiving)",
                   "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
               })
               with urlopen(req, timeout=120) as r:
                   data = r.read()
                   ctype = r.headers.get("Content-Type","")
-              return data, ctype, proxy
+              return data, ctype, url
 
-          for source, target in items:
+          for source, filename, target in items:
               p = Path(target)
               p.parent.mkdir(parents=True, exist_ok=True)
-              data, ctype, proxy = fetch_via_proxy(source)
+              data, ctype, used_url = fetch_thumb(filename)
               if len(data) < 8000:
-                  raise RuntimeError(f"Downloaded file too small: {target} ({len(data)} bytes), {ctype}, {proxy}")
+                  raise RuntimeError(f"Downloaded file too small: {target} ({len(data)} bytes), {ctype}, {used_url}")
               if not (data.startswith(b"\xff\xd8\xff") or data.startswith(b"RIFF") or data.startswith(b"\x89PNG")):
                   raise RuntimeError(f"Unexpected image bytes for {target}: {data[:16]!r}, {ctype}")
               p.write_bytes(data)
               print(target, len(data), ctype)
-              time.sleep(2)
+              time.sleep(1)
 
           html_path = Path("web/ch01/index.html")
           html = html_path.read_text(encoding="utf-8")
-          for source, target in items:
+          for source, filename, target in items:
               if source not in html:
                   raise RuntimeError(f"Expected remote source not found in HTML: {source}")
               html = html.replace(source, "../../" + target)
@@ -93,12 +94,11 @@ jobs:
           marker = "\n## 本地化状态\n"
           text = (
               "\n以上正式采用的历史视觉已经本地归档到本目录。"
-              "HTML 仅引用仓库内相对路径，不依赖 Wikimedia 或下载代理。"
-              "图片的原始来源、作者与许可仍按前文记录；下载代理只用于一次性传输。\n"
+              "HTML 仅引用仓库内相对路径，不依赖 Wikimedia CDN。"
+              "图片原始来源、作者与许可仍按前文记录；本地副本由 Wikimedia Commons 缩略图服务生成。\n"
           )
           if marker in existing:
-              before = existing.split(marker)[0]
-              existing = before + marker + text
+              existing = existing.split(marker)[0] + marker + text
           else:
               existing += marker + text
           readme.write_text(existing, encoding="utf-8")
@@ -106,11 +106,20 @@ jobs:
 
       - name: Verify localized assets
         run: |
-          test -s assets/ch01/historical/beijing-1988.jpg
-          test -s assets/ch01/historical/youth-fashion-1982.jpg
-          test -s assets/ch01/historical/bicyclists-1987.jpg
-          test -s assets/ch01/historical/cassette-recorder.jpg
-          test -s assets/ch01/historical/airmail-envelope-1978.jpg
+          for f in \
+            assets/ch01/historical/beijing-1988.jpg \
+            assets/ch01/historical/youth-fashion-1982.jpg \
+            assets/ch01/historical/bicyclists-1987.jpg \
+            assets/ch01/historical/cassette-recorder.jpg \
+            assets/ch01/historical/airmail-envelope-1978.jpg
+          do
+            test -s "$f"
+            bytes=$(wc -c < "$f")
+            if [ "$bytes" -lt 8000 ]; then
+              echo "$f too small: $bytes"
+              exit 1
+            fi
+          done
           if grep -q "https://upload.wikimedia.org/" web/ch01/index.html; then
             echo "Remote Wikimedia image URL still present"
             exit 1
