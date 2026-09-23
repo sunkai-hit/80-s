@@ -1,109 +1,63 @@
-# 第一章视觉资产总账 V2.0
+# 第一章视觉资产总账 V3.1
 
-状态：
-- 🟢 已进入最终HTML
-- 🟡 作为研究资料保留
-- ⚪ 候选/备用
-- ⛔ 已废弃
+状态：**CURRENT / 与 web/ch01/index.html 一致**
 
-## 最终采用资产
+> 本文件只记录当前正式页面资产。旧版 V1/V2 SVG 与候选素材的历史决策见 Git 历史与 review.md。
 
-| ID | 内容 | 类型 | 来源/制作方式 | 状态 | 文件/位置 |
-|---|---|---|---|---|---|
-| A01 | 城市生活时代影像 | 历史照片 | 北京1988，Wikimedia Commons | 🟢 | HTML远程开放许可图片 |
-| A02 | 1985教育体制改革 | 官方公报 | 国务院公报1985年第15号 | 🟢 | HTML远程公共领域图片 |
-| A03 | 单位生活半径 | 编辑视觉 | 独立SVG设计 | 🟢 | assets/ch01/editorial/unit-life-map.svg |
-| A04 | 市场与自行车 | 历史照片 | 西宁大十字1985 | 🟢 | HTML远程 CC BY-SA 4.0 |
-| A05 | 万元户财富尺度 | 数字书页 | 页面排版 + 国家统计局数据 | 🟢 | web/ch01/index.html |
-| A06 | 青年服装色彩变化 | 历史照片 | China1982-326 | 🟢 | HTML远程 CC BY-SA 3.0 |
-| A07 | 公共空间与自行车 | 历史照片 | Bicyclists in China, 1987 | 🟢 | HTML远程 CC BY-SA 3.0 |
-| A08 | 双卡录音机 | 博物馆展品照片 | HKMH cassette recorder | 🟢 | HTML远程 CC BY-SA 3.0 |
-| A09 | 航空信封 | 国家标准史料 | 1978标准航空信封 | 🟢 | HTML远程 Public Domain |
-| A10 | 四件东西 / 四种人生 | 编辑视觉 | 独立SVG设计 | 🟢 | assets/ch01/editorial/four-objects.svg |
+## 1. 当前正式视觉资产
 
-## V1.0 废弃图表
+| ID | 页面 | 内容 | 类型 | 本地文件 | 状态 |
+|---|---:|---|---|---|---|
+| G01 | P04 | 包分配 | image2 编辑复原 | assets/ch01/generated/distribution-1985.avif | 🟢 |
+| G02 | P06 | 单位生活半径 | image2 编辑复原 | assets/ch01/generated/unit-life-radius.avif | 🟢 |
+| H01 | P08 | 城市生活时代影像 | 历史照片 | assets/ch01/historical/beijing-1988.jpg | 🟢 |
+| G03 | P12 | 万元户收入尺度 | image2 编辑视觉 | assets/ch01/generated/wanyuan-1985.avif | 🟢 |
+| H02 | P14 | 青年服装色彩 | 历史照片 | assets/ch01/historical/youth-fashion-1982.jpg | 🟢 |
+| H03 | P17 | 公共空间与自行车 | 历史照片 | assets/ch01/historical/bicyclists-1987.jpg | 🟢 |
+| H04 | P20 | 录音机实物 | 历史实物照片 | assets/ch01/historical/cassette-recorder.jpg | 🟢 |
+| H05 | P25 | 航空信封 | 原始史料/实物 | assets/ch01/historical/airmail-envelope-1978.jpg | 🟢 |
+| G04 | P29 | 四种人生 | image2 场景复原 | assets/ch01/generated/four-paths-1985.avif | 🟢 |
 
-以下文件保留用于版本追踪，但不再被最终HTML引用：
+## 2. 当前工程检查
 
-| 文件 | 状态 | 原因 |
-|---|---|---|
-| assets/ch01/infographics/vs02_distribution_1985.svg | ⛔ | 过于流程图化 |
-| assets/ch01/infographics/vs03_danwei_system.svg | ⛔ | 中心圆+节点，企业PPT感过强 |
-| assets/ch01/infographics/vs05_wanyuan_scale.svg | ⛔ | 九方块表达过于机械 |
-| assets/ch01/infographics/vs11_four_paths.svg | ⛔ | 四宫格不符合故事收束语气 |
+- 正式图片总数：9
+- 历史照片 / 实物：5
+- image2 / 编辑视觉：4
+- 远程图片热链：0
+- 旧复杂 SVG 引用：0
+- 正文页内嵌大图：0
 
-## 研究中但未进入最终页的资料
+## 3. image2 使用边界
 
-- 辽宁省档案馆1983年统一分配工作报到证案例：🟡
-- 中国丝绸博物馆《街上流行红裙子》展品线索：🟡
-- 人民日报1983年燕舞双卡录音机亲历照片：🟡
-- 1985博物馆实寄信封：🟡
+- P04 “包分配”：通知书画面为编辑复原，不是档案原件。
+- P06 “单位生活半径”：根据单位制史料制作的解释性复原。
+- P12 “万元户”：1148元/年、约8.7年工资为已核验尺度；不是今天购买力换算。
+- P29 “四种人生”：叙事收束用场景复原，不是历史现场照片。
 
-这些资料仍用于史实核验，但由于图片授权/页面设计等原因，V2.0没有直接转载。
+## 4. 历史视觉使用边界
 
-## 资产原则
+- 历史照片不暗示照片人物就是章节虚构角色。
+- 1988北京照片作为近年代城市生活背景，不声称拍摄于1985。
+- 航空信封用于解释邮政实物形态，不冒充故事中的那封美国来信。
+- 详细原始 URL、作者与许可见：
+  - assets/ch01/historical/README.md
+  - sources/copyright.md
 
-1. HTML不直接画复杂插图。
-2. 真实历史图像必须标注来源、年份和授权。
-3. AI复原图必须明确标注“场景复原图”，但第一章V2.0最终没有使用AI复原图。
-4. 图片不再插入正文段落流；只进入扉页、时代影像页、图文页、史料页或独立视觉页。
-5. 视觉数量由阅读节奏决定，不按固定比例强行添加。
+## 5. 当前废弃资产
 
-
----
-
-# Web V2.0 视觉资产决策
-
-V2不再使用V1的4张流程图式SVG信息图：
+以下类型不得重新接回正式 HTML：
 - vs02_distribution_1985.svg
 - vs03_danwei_system.svg
 - vs05_wanyuan_scale.svg
 - vs11_four_paths.svg
+- unit-life-map.svg
+- four-objects.svg
+- 早期损坏 / 截断的 PNG、WebP image2 上传文件
 
-这些文件仅保留为历史版本，不再被HTML引用。
+## 6. 后续章节规则
 
-V2视觉策略：
-- “包分配”：独立时代翻译页，编辑型排版；
-- “单位”：编辑型文字视觉页；
-- “万元户”：极简大数字尺度页；
-- “四条人生”：深色章节收束页；
-- 历史图片：全部独立为影像/实物页，不插正文。
+后续章节资产管理统一遵循根目录：
 
+**WORKFLOW.md**
 
----
-
-# V3.0 image2 视觉资产（2026-09-23）
-
-根据页面审阅反馈，V3.0 正式停止使用旧版流程图式/代码式 SVG 视觉，改为 image2 制作的编辑型视觉。
-
-已上传到 GitHub：
-
-| 页面/主题 | 文件 | 类型 | 状态 |
-|---|---|---|---|
-| P04 包分配 | assets/ch01/generated/distribution-1985.png | image2 编辑复原 | 🟢 已采用 |
-| P06 单位生活半径 | assets/ch01/generated/unit-life-radius.png | image2 编辑复原 | 🟢 已采用 |
-| P12 万元户尺度 | assets/ch01/generated/wanyuan-1985.png | image2 编辑视觉 | 🟢 已采用 |
-| P29 四种人生 | assets/ch01/generated/four-paths-1985.png | image2 场景复原 | 🟢 已采用 |
-
-使用边界：
-- “包分配”图片中的通知书为编辑复原，不作为真实档案原件；
-- “单位生活半径”为依据单位制史料制作的解释性复原；
-- “万元户”中的1148元/年、约8.7年工资为已核验数据；
-- “四种人生”是叙事场景复原，不是历史现场照片。
-
-旧 SVG 文件继续保留在仓库作为版本历史，但 HTML 引用数为 0。
-
-
-## V3.1 二进制资产修复
-
-V3.0 首次尝试通过连接器直接提交 image2 二进制时出现截断，已在 V3.1 完全修复。
-
-最终正式文件：
-- assets/ch01/generated/distribution-1985.avif — 10435 bytes
-- assets/ch01/generated/unit-life-radius.avif — 12142 bytes
-- assets/ch01/generated/wanyuan-1985.avif — 8445 bytes
-- assets/ch01/generated/four-paths-1985.avif — 9973 bytes
-
-四个文件均由 GitHub 端读取完整 base64 分块后重新生成，提交前已核对解码字节数与本地压缩母版一致。
-
-HTML 已全部切换到上述 .avif 文件。
+正式 HTML 使用的每一张图片，都必须先进入对应章节的 historical / generated 本地目录，再进入页面。
