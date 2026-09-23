@@ -17,83 +17,102 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download historical images and rewrite HTML
+      - name: Download historical images through cache proxy
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          from urllib.parse import quote
           from urllib.request import Request, urlopen
-          from urllib.error import HTTPError
           import time
 
-          items = {
-              "https://upload.wikimedia.org/wikipedia/commons/6/6c/Beijing%2C_China_1988_%285%29.jpg":
+          items = [
+              (
+                  "https://upload.wikimedia.org/wikipedia/commons/6/6c/Beijing%2C_China_1988_%285%29.jpg",
                   "assets/ch01/historical/beijing-1988.jpg",
-              "https://upload.wikimedia.org/wikipedia/commons/f/f7/China1982-326.jpg":
+              ),
+              (
+                  "https://upload.wikimedia.org/wikipedia/commons/f/f7/China1982-326.jpg",
                   "assets/ch01/historical/youth-fashion-1982.jpg",
-              "https://upload.wikimedia.org/wikipedia/commons/9/9a/Bicyclists_in_China%2C_1987.jpg":
+              ),
+              (
+                  "https://upload.wikimedia.org/wikipedia/commons/9/9a/Bicyclists_in_China%2C_1987.jpg",
                   "assets/ch01/historical/bicyclists-1987.jpg",
-              "https://upload.wikimedia.org/wikipedia/commons/2/20/HKMH_-_The_Flavours_of_Everyday_Life_in_China_%28cassette_recorder%29.jpg":
+              ),
+              (
+                  "https://upload.wikimedia.org/wikipedia/commons/2/20/HKMH_-_The_Flavours_of_Everyday_Life_in_China_%28cassette_recorder%29.jpg",
                   "assets/ch01/historical/cassette-recorder.jpg",
-              "https://upload.wikimedia.org/wikipedia/commons/7/7b/Standard_Airmail_Envelope_of_Mainland_China_in_1978.jpg":
+              ),
+              (
+                  "https://upload.wikimedia.org/wikipedia/commons/7/7b/Standard_Airmail_Envelope_of_Mainland_China_in_1978.jpg",
                   "assets/ch01/historical/airmail-envelope-1978.jpg",
-          }
+              ),
+          ]
 
-          for idx, (url, target) in enumerate(items.items(), start=1):
+          def fetch_via_proxy(source):
+              # One-time transport only. The final site never depends on this proxy.
+              raw = source.replace("https://", "")
+              proxy = "https://images.weserv.nl/?url=" + quote(raw, safe="/:%(),_-") + "&w=1800&output=jpg&q=90"
+              req = Request(proxy, headers={
+                  "User-Agent": "Mozilla/5.0 80-s-book-project/1.0",
+                  "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+              })
+              with urlopen(req, timeout=120) as r:
+                  data = r.read()
+                  ctype = r.headers.get("Content-Type","")
+              return data, ctype, proxy
+
+          for source, target in items:
               p = Path(target)
               p.parent.mkdir(parents=True, exist_ok=True)
-              data = None
-              for attempt in range(1, 9):
-                  try:
-                      req = Request(url, headers={
-                          "User-Agent": "80-s-book-project/1.0 (historical image archiving)",
-                          "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-                      })
-                      with urlopen(req, timeout=90) as r:
-                          data = r.read()
-                      break
-                  except HTTPError as e:
-                      if e.code != 429 or attempt == 8:
-                          raise
-                      wait = min(10 * attempt, 60)
-                      print(f"429 for {target}; retrying in {wait}s (attempt {attempt}/8)")
-                      time.sleep(wait)
-              if data is None or len(data) < 5000:
-                  raise RuntimeError(f"Downloaded file too small: {target} ({0 if data is None else len(data)} bytes)")
+              data, ctype, proxy = fetch_via_proxy(source)
+              if len(data) < 8000:
+                  raise RuntimeError(f"Downloaded file too small: {target} ({len(data)} bytes), {ctype}, {proxy}")
+              if not (data.startswith(b"\xff\xd8\xff") or data.startswith(b"RIFF") or data.startswith(b"\x89PNG")):
+                  raise RuntimeError(f"Unexpected image bytes for {target}: {data[:16]!r}, {ctype}")
               p.write_bytes(data)
-              print(target, len(data))
-              if idx < len(items):
-                  time.sleep(8)
+              print(target, len(data), ctype)
+              time.sleep(2)
 
           html_path = Path("web/ch01/index.html")
           html = html_path.read_text(encoding="utf-8")
-          for url, target in items.items():
-              local = "../../" + target
-              if url not in html:
-                  raise RuntimeError(f"Expected URL not found in HTML: {url}")
-              html = html.replace(url, local)
+          for source, target in items:
+              if source not in html:
+                  raise RuntimeError(f"Expected remote source not found in HTML: {source}")
+              html = html.replace(source, "../../" + target)
+          if "https://upload.wikimedia.org/" in html:
+              raise RuntimeError("Remote Wikimedia image hotlinks remain in HTML")
           html_path.write_text(html, encoding="utf-8")
-
-          leftovers = [u for u in items if u in html]
-          if leftovers:
-              raise RuntimeError(f"Remote Wikimedia URLs remain: {leftovers}")
 
           readme = Path("assets/ch01/historical/README.md")
           existing = readme.read_text(encoding="utf-8") if readme.exists() else "# 第一章历史视觉素材\n"
           marker = "\n## 本地化状态\n"
-          if marker not in existing:
-              existing += marker + "\n以上正式采用的历史视觉已下载到本目录；HTML只引用本地相对路径。原始来源、作者和许可说明保留在本文件及页面图注中。\n"
+          text = (
+              "\n以上正式采用的历史视觉已经本地归档到本目录。"
+              "HTML 仅引用仓库内相对路径，不依赖 Wikimedia 或下载代理。"
+              "图片的原始来源、作者与许可仍按前文记录；下载代理只用于一次性传输。\n"
+          )
+          if marker in existing:
+              before = existing.split(marker)[0]
+              existing = before + marker + text
+          else:
+              existing += marker + text
           readme.write_text(existing, encoding="utf-8")
           PY
 
-      - name: Verify no Wikimedia image hotlinks remain
+      - name: Verify localized assets
         run: |
+          test -s assets/ch01/historical/beijing-1988.jpg
+          test -s assets/ch01/historical/youth-fashion-1982.jpg
+          test -s assets/ch01/historical/bicyclists-1987.jpg
+          test -s assets/ch01/historical/cassette-recorder.jpg
+          test -s assets/ch01/historical/airmail-envelope-1978.jpg
           if grep -q "https://upload.wikimedia.org/" web/ch01/index.html; then
             echo "Remote Wikimedia image URL still present"
             exit 1
           fi
           find assets/ch01/historical -maxdepth 1 -type f -print -exec wc -c {} \;
 
-      - name: Commit localized assets
+      - name: Commit localized assets and remove one-time workflow
         run: |
           git config user.name "80-s book automation"
           git config user.email "actions@users.noreply.github.com"
