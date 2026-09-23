@@ -46,3 +46,7 @@
 - 文件页：https://zh.wikisource.org/wiki/File:Standard_Airmail_Envelope_of_Mainland_China_in_1978.jpg
 - 原图：https://upload.wikimedia.org/wikipedia/commons/7/7b/Standard_Airmail_Envelope_of_Mainland_China_in_1978.jpg
 - 注意：用于解释时代邮政实物，不声称它就是小说中那封美国来信。
+
+## 本地化状态
+
+以上正式采用的历史视觉已经本地归档到本目录。HTML 仅引用仓库内相对路径，不依赖 Wikimedia CDN。图片原始来源、作者与许可仍按前文记录；本地副本由 Wikimedia Commons 缩略图服务生成。
