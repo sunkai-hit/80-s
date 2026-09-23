@@ -63,9 +63,11 @@
 - 1978国家标准航空信封：第25页
 - 1985教育体制改革官方文件作为第04页考据依据
 
-### 独立编辑视觉
-- assets/ch01/editorial/unit-life-map.svg：第06页
-- assets/ch01/editorial/four-objects.svg：第29页
+### image2 / 编辑视觉
+- assets/ch01/generated/distribution-1985.avif：第04页
+- assets/ch01/generated/unit-life-radius.avif：第06页
+- assets/ch01/generated/wanyuan-1985.avif：第12页
+- assets/ch01/generated/four-paths-1985.avif：第29页
 
 ## 已废弃视觉
 
@@ -115,5 +117,6 @@ V1.0下列“企业PPT式”图表保留用于版本追踪，但不再进入最�
 - 正文从正常书页上缘直接开始。
 
 ## 视觉规则
-P04 / P06 / P12 / P29 已全部改用 image2 编辑视觉。
+P04 / P06 / P12 / P29 已全部改用 image2 编辑视觉，并存放在 `assets/ch01/generated/`。
 复杂视觉不再使用 SVG/HTML 程序式绘制。
+正式采用的历史照片全部存放在 `assets/ch01/historical/`，HTML 不使用远程图片热链。
