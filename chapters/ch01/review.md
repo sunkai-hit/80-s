@@ -64,8 +64,10 @@ V2使用：
 - chapters/ch01/page-script.md：分页设计源
 - chapters/ch01/manuscript.md：正文唯一源
 
-## 当前限制
-历史照片仍通过Wikimedia Commons公开许可原图URL加载，因此浏览器需要联网才能显示这些照片。HTML、CSS、JS和文字内容本身均在仓库内。若进入最终出版/独立部署阶段，再做图片本地化归档即可。
+## 当前资源状态
+历史照片已经全部本地化到 `assets/ch01/historical/`，正式 HTML 中远程图片热链为 0。
+image2 / 编辑视觉已经全部本地化到 `assets/ch01/generated/`。
+页面图片可随仓库独立部署，不依赖 Wikimedia 图片 CDN。
 
 ## 结论
 第一章 V2 已完成从“长网页”到“单页数字书”的结构性重构。
@@ -115,11 +117,11 @@ V2使用：
 
 已停止在最终HTML中使用复杂SVG视觉。
 
-改用 image2 制作并上传 GitHub 的 4 张 PNG：
-- distribution-1985.png
-- unit-life-radius.png
-- wanyuan-1985.png
-- four-paths-1985.png
+改用 image2 制作并上传 GitHub 的 4 张正式视觉资产：
+- distribution-1985.avif
+- unit-life-radius.avif
+- wanyuan-1985.avif
+- four-paths-1985.avif
 
 HTML 中旧视觉引用：0。
 image2 本地资产引用：4。
@@ -129,3 +131,14 @@ image2 本地资产引用：4。
 - image2视觉页：4
 - 旧SVG引用：0
 - 连续正文无重复小标题：已启用
+
+
+---
+
+# V3.1 资源本地化与流程收口
+
+- 5张正式历史照片已本地化到 `assets/ch01/historical/`。
+- 4张 image2 视觉已本地化到 `assets/ch01/generated/`。
+- HTML 远程图片引用：0。
+- 新增根目录 `WORKFLOW.md`，作为第二章及后续章节唯一生产流程基线。
+- 新增 `scripts/check-local-assets.py`，正式 HTML 完成后必须通过本地资源检查。
