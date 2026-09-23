@@ -1,0 +1,33 @@
+:root{--bg:#f3efe8;--paper:#fffdf8;--ink:#2b2723;--muted:#746c63;--accent:#8d4336;--line:#ddd4c8;--soft:#eee7dd}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif;line-height:1.95}
+#progress{position:fixed;top:0;left:0;height:3px;background:var(--accent);width:0;z-index:100}
+.hero{min-height:72vh;display:flex;align-items:flex-end;background:linear-gradient(to top,rgba(18,14,10,.72),rgba(18,14,10,.16) 60%),url("https://upload.wikimedia.org/wikipedia/commons/6/6c/Beijing%2C_China_1988_%285%29.jpg") center/cover no-repeat;color:white;padding:64px 24px 52px}
+.hero-inner{width:min(920px,100%);margin:0 auto}
+.kicker{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;letter-spacing:.12em;font-size:13px;opacity:.86}
+.hero h1{font-size:clamp(38px,6vw,70px);line-height:1.1;margin:14px 0 14px}
+.hero p{font-size:clamp(16px,2vw,21px);line-height:1.8;max-width:760px;margin:0;opacity:.96}
+.hero .credit{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:12px;opacity:.78;margin-top:18px}
+main{padding:48px 22px 100px}
+.article{width:min(790px,100%);margin:0 auto}
+.article h2{font-size:31px;line-height:1.35;margin:72px 0 24px;padding-top:10px}
+.article p{font-size:18px;margin:0 0 18px}
+.article strong{font-weight:700;color:#201d1a}
+.article h2:first-child{margin-top:10px}
+.era{margin:32px -28px;padding:24px 28px;background:#ece3d6;border-left:5px solid var(--accent);border-radius:0 14px 14px 0}
+.era h3{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:19px;margin:0 0 14px;color:var(--accent)}
+.era p{font-size:16px;line-height:1.9;margin-bottom:10px}
+.media-wide{width:min(1120px,calc(100vw - 36px));margin:42px 50%;transform:translateX(-50%)}
+.media-wide img,.media-wide svg{display:block;width:100%;height:auto;border-radius:14px;background:white;box-shadow:0 14px 40px rgba(40,30,20,.08)}
+.caption{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;color:var(--muted);font-size:13px;line-height:1.7;margin-top:10px}
+.caption a{color:inherit}
+.source-tag{display:inline-block;color:var(--accent);font-weight:700;margin-right:6px}
+.pullquote{margin:40px 0;padding:25px 28px;background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:24px;line-height:1.75;font-weight:600}
+.endmark{font-size:28px;text-align:center;margin:54px 0 8px;color:var(--accent);font-weight:700}
+.sources{width:min(900px,100%);margin:76px auto 0;padding:28px;border-top:1px solid var(--line);font-family:"Noto Sans SC","Microsoft YaHei",sans-serif}
+.sources h2{font-size:22px;margin:0 0 18px}
+.sources p,.sources li{font-size:13px;line-height:1.75;color:var(--muted)}
+.sources li{margin-bottom:10px}
+@media(max-width:720px){main{padding-left:18px;padding-right:18px}.article p{font-size:17px}.article h2{font-size:27px}.era{margin-left:0;margin-right:0}.pullquote{font-size:21px;padding:20px}.hero{min-height:62vh}.media-wide{width:100%;margin-left:0;margin-right:0;transform:none}}
+@media(prefers-color-scheme:dark){:root{--bg:#171512;--paper:#211e1a;--ink:#ece5da;--muted:#b9aea1;--line:#3b342d;--soft:#29251f}.era{background:#2a241e}.media-wide img,.media-wide svg{background:#f5f1e9}}
