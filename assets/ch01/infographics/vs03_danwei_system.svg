@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<style>
+  text{font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;fill:#27231f}
+  .title{font-size:44px;font-weight:700}
+  .sub{font-size:19px;fill:#6e675f}
+  .node{font-size:21px;font-weight:600}
+  .center1{font-size:27px;font-weight:700;fill:white}
+  .center2{font-size:18px;fill:#f7eee8}
+  .note{font-size:16px;fill:#756e65}
+</style>
+<rect width="1200" height="760" fill="#f5f1e9"/>
+<text x="70" y="76" class="title">“单位”为什么不只是今天的一家公司？</text>
+<text x="70" y="112" class="sub">在计划经济时期的城市生活中，单位往往同时连接工作、福利与日常生活</text>
+<g stroke="#b7aa9c" stroke-width="3">
+<line x1="600" y1="380" x2="600" y2="205"/><line x1="600" y1="380" x2="900" y2="250"/>
+<line x1="600" y1="380" x2="940" y2="420"/><line x1="600" y1="380" x2="850" y2="580"/>
+<line x1="600" y1="380" x2="350" y2="580"/><line x1="600" y1="380" x2="260" y2="420"/>
+<line x1="600" y1="380" x2="300" y2="250"/><line x1="600" y1="380" x2="600" y2="610"/>
+</g>
+<circle cx="600" cy="380" r="115" fill="#8d4336"/>
+<text x="600" y="367" text-anchor="middle" class="center1">一个城市职工</text>
+<text x="600" y="405" text-anchor="middle" class="center2">“我在哪个单位？”</text>
+<g>
+<rect x="500" y="150" width="200" height="80" rx="18" fill="#fffdf8" stroke="#d8cfc2"/><text x="600" y="200" text-anchor="middle" class="node">工作岗位</text>
+<rect x="800" y="205" width="200" height="80" rx="18" fill="#fffdf8" stroke="#d8cfc2"/><text x="900" y="255" text-anchor="middle" class="node">工资奖金</text>
+<rect x="840" y="380" width="200" height="80" rx="18" fill="#fffdf8" stroke="#d8cfc2"/><text x="940" y="430" text-anchor="middle" class="node">住房分配</text>
+<rect x="750" y="540" width="200" height="80" rx="18" fill="#fffdf8" stroke="#d8cfc2"/><text x="850" y="590" text-anchor="middle" class="node">医疗</text>
+<rect x="500" y="570" width="200" height="80" rx="18" fill="#fffdf8" stroke="#d8cfc2"/><text x="600" y="620" text-anchor="middle" class="node">退休保障</text>
+<rect x="250" y="540" width="200" height="80" rx="18" fill="#fffdf8" stroke="#d8cfc2"/><text x="350" y="590" text-anchor="middle" class="node">托幼</text>
+<rect x="160" y="380" width="200" height="80" rx="18" fill="#fffdf8" stroke="#d8cfc2"/><text x="260" y="430" text-anchor="middle" class="node">食堂 / 浴室</text>
+<rect x="200" y="205" width="200" height="80" rx="18" fill="#fffdf8" stroke="#d8cfc2"/><text x="300" y="255" text-anchor="middle" class="node">福利</text>
+</g>
+<text x="70" y="714" class="note">注：不同单位条件差异很大，并非每个单位都完整提供上述全部服务；大型国企和事业单位“单位办社会”的特征尤其明显。</text>
+</svg>
