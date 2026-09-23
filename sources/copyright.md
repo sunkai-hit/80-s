@@ -76,7 +76,7 @@ HTML与出版物建议统一标注：
 
 ---
 
-# 第一章 Web V2.0 最终视觉权利记录
+# 第一章 Web V2.0 历史版本视觉权利记录（非当前有效清单）
 
 | 资产 | 年份 | 作者/机构 | 权利状态 | 用途 |
 |---|---:|---|---|---|
@@ -120,3 +120,28 @@ HTML与出版物建议统一标注：
 HTML 已取消 Wikimedia 图片热链，原始来源信息继续保留在：
 
 `assets/ch01/historical/README.md`
+
+
+---
+
+# 第一章 V3.1 当前有效视觉权利清单
+
+当前正式 HTML 使用的真实历史视觉为：
+
+| 本地文件 | 原始资产 | 年份 | 作者/机构 | 权利状态 | 当前用途 |
+|---|---|---:|---|---|---|
+| assets/ch01/historical/beijing-1988.jpg | Beijing, China 1988 (5) | 1988 | Derzsi Elekes Andor | CC BY-SA 3.0 | 近年代城市生活背景 |
+| assets/ch01/historical/youth-fashion-1982.jpg | China1982-326 | 1982 | H. Grobe | CC BY-SA 3.0 | 青年服装时代影像 |
+| assets/ch01/historical/bicyclists-1987.jpg | Bicyclists in China, 1987 | 1987 | GeorgeLouis / BeenAroundAWhile | CC BY-SA 3.0 | 公共空间与自行车 |
+| assets/ch01/historical/cassette-recorder.jpg | HKMH cassette recorder | 80年代初展品 | Mk2010 | CC BY-SA 3.0 | 录音机实物 |
+| assets/ch01/historical/airmail-envelope-1978.jpg | Standard Airmail Envelope of Mainland China in 1978 | 1978 | 国家标准总局 | Public Domain | 航空信封史料 |
+
+当前正式 image2 / 编辑视觉：
+- assets/ch01/generated/distribution-1985.avif
+- assets/ch01/generated/unit-life-radius.avif
+- assets/ch01/generated/wanyuan-1985.avif
+- assets/ch01/generated/four-paths-1985.avif
+
+以上四项均属于项目生成/编辑视觉，不作为真实历史照片使用。
+
+当前正式 HTML 不使用“西宁大十字1985”、unit-life-map.svg、four-objects.svg 等 V2 历史版本资产。
