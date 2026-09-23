@@ -57,3 +57,18 @@ HTML与出版物建议统一标注：
 - 或制作明确标注的“场景/道具复原图”。
 
 不得直接复制来源不明或版权状态不明的网络老照片。
+
+
+---
+
+## 第一章 Web V1.0 已采用的开放素材
+
+| 资产 | 权利状态 | 使用 |
+|---|---|---|
+| Beijing, China 1988 (5) / Derzsi Elekes Andor | CC BY-SA 3.0 | 章节头图 |
+| Bicyclists in China, 1987 / GeorgeLouis | CC BY-SA 3.0 | 自行车与公共空间 |
+| China1982-326 / H. Grobe | CC BY-SA 3.0 | 服装色彩参考 |
+| HKMH cassette recorder / Mk2010 | CC BY-SA 3.0 | 录音机与磁带实物 |
+| Standard Airmail Envelope of Mainland China in 1978 | Public Domain | 航空信封史料 |
+
+详细来源和原图URL见：assets/ch01/historical/README.md
