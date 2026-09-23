@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<style>
+ text{font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;fill:#26231f}
+ .title{font-size:44px;font-weight:700}.sub{font-size:19px;fill:#6f685f}
+ .name{font-size:24px;font-weight:700}.path{font-size:18px;fill:#5f5851}
+ .center1{font-size:34px;font-weight:800;fill:white}.center2{font-size:20px;fill:#f5e9e4}
+ .foot{font-size:23px;font-weight:700;fill:#8d4336}
+</style>
+<rect width="1200" height="760" fill="#f5f1e9"/>
+<text x="70" y="80" class="title">夜里十一点：四条路同时出现</text>
+<text x="70" y="116" class="sub">1985年的意义，不是“哪条路后来赢了”，而是一个年轻人第一次真切地看见了不止一种人生</text>
+<g stroke="#b8ada1" stroke-width="3">
+<line x1="600" y1="390" x2="300" y2="245"/><line x1="600" y1="390" x2="900" y2="245"/>
+<line x1="600" y1="390" x2="300" y2="560"/><line x1="600" y1="390" x2="900" y2="560"/>
+</g>
+<circle cx="600" cy="390" r="120" fill="#8d4336"/>
+<text x="600" y="378" text-anchor="middle" class="center1">你，20岁</text>
+<text x="600" y="418" text-anchor="middle" class="center2">1985 · 尚未选择</text>
+<rect x="120" y="165" width="360" height="150" rx="22" fill="#fffdf8" stroke="#d8cfc2"/>
+<text x="155" y="215" class="name">父亲</text><text x="155" y="255" class="path">单位 · 稳定 · 分房 · 可预期</text><text x="155" y="285" class="path">“有个好单位比什么都强。”</text>
+<rect x="720" y="165" width="360" height="150" rx="22" fill="#fffdf8" stroke="#d8cfc2"/>
+<text x="755" y="215" class="name">建军</text><text x="755" y="255" class="path">广州 · 个体经营 · 现金收入</text><text x="755" y="285" class="path">“有钱挣为什么不干？”</text>
+<rect x="120" y="500" width="360" height="150" rx="22" fill="#fffdf8" stroke="#d8cfc2"/>
+<text x="155" y="550" class="name">小梅</text><text x="155" y="590" class="path">夜大学 · 继续学习 · 改变自己</text><text x="155" y="620" class="path">“我想再学点东西。”</text>
+<rect x="720" y="500" width="360" height="150" rx="22" fill="#fffdf8" stroke="#d8cfc2"/>
+<text x="755" y="550" class="name">志强</text><text x="755" y="590" class="path">TOEFL · 美国 · 外部世界</text><text x="755" y="620" class="path">“谁说有工作就不能出去？”</text>
+<text x="600" y="715" text-anchor="middle" class="foot">没有任何一条路，在1985年自带结局。</text>
+</svg>
