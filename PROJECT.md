@@ -61,11 +61,16 @@ HTML/CSS 只负责排版、文字层级、简单线条、背景与轻交互；�
 
 ## 7. 生产状态定义
 
-- **DRAFT**：内容仍可大改
-- **CONTENT LOCKED**：故事和正文基本锁定，可以开展视觉制作
-- **VISUAL LOCKED**：视觉内容已完成，可以组装 HTML
-- **WEB REVIEW**：网页审阅阶段
-- **FINAL**：该章正式完成
+状态门与 `WORKFLOW.md` 保持一致：
+
+- **DRAFT**：正文初稿完成，内容仍可大改
+- **RESEARCHED**：影响剧情成立的关键史实已核验
+- **CONTENT LOCKED**：故事和正文基本锁定
+- **ASSETS READY**：素材、版权判断与历史图片本地化完成
+- **VISUAL LOCKED**：视觉内容完成并通过审核
+- **WEB ASSEMBLED**：分页与 HTML 组装完成
+- **WEB REVIEW**：网页阅读审阅阶段
+- **FINAL**：文字、视觉、版权、工程检查全部通过
 
 
 ---
