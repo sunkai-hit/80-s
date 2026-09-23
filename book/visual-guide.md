@@ -98,3 +98,33 @@ AI 图必须标注：
 视觉内容约 20%—25%。
 
 图片数量不求多，关键节点使用高质量大图。
+
+
+---
+
+## 8. 正式 HTML 的图片本地化规则
+
+从第一章开始，正式 Web Book 采用以下强制规则：
+
+1. **所有进入正式 HTML 的图片必须先本地归档到仓库。**
+2. HTML 中的 `<img src>` 只能引用项目内相对路径，不允许直接引用 Wikimedia、博物馆、媒体、图床或其他外部图片 URL。
+3. 真实历史照片按章节存放，例如：
+   - `assets/ch01/historical/`
+   - `assets/ch02/historical/`
+4. AI / image2 场景复原与编辑视觉按章节存放，例如：
+   - `assets/ch01/generated/`
+5. 原始网页链接只保留在素材 README、版权记录和研究文档中，用于追溯来源与许可，不作为运行时图片依赖。
+6. 图片进入 HTML 前必须同时完成：
+   - 来源确认；
+   - 版权/许可状态确认；
+   - 本地文件归档；
+   - 页面图注/署名；
+   - 断网可显示检查。
+
+### 发布前检查
+
+每章 HTML 完成后必须运行：
+
+`python scripts/check-local-assets.py`
+
+若发现任何远程 `<img src="http...">`，该章节不得标记为 Visual Locked / Web Complete。
