@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+<style>
+  text{font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif; fill:#26231f}
+  .title{font-size:44px;font-weight:700}
+  .sub{font-size:20px;fill:#6f685f}
+  .boxTitle{font-size:27px;font-weight:700}
+  .body{font-size:21px}
+  .small{font-size:17px;fill:#6f685f}
+</style>
+<rect width="1200" height="700" fill="#f5f1e9"/>
+<text x="70" y="80" class="title">1985：毕业分配正在改变</text>
+<text x="70" y="118" class="sub">不是“突然取消分配”，而是从统包统分向志愿、推荐和择优录用过渡</text>
+<rect x="70" y="185" width="390" height="320" rx="26" fill="#e7e0d5"/>
+<text x="105" y="235" class="boxTitle">过去的典型逻辑</text>
+<text x="105" y="290" class="body">国家计划招生</text>
+<text x="105" y="335" class="body">学校组织毕业分配</text>
+<text x="105" y="380" class="body">单位接收</text>
+<text x="105" y="425" class="body">学生选择空间较小</text>
+<rect x="495" y="248" width="210" height="190" rx="95" fill="#8d4336"/>
+<text x="600" y="315" text-anchor="middle" style="font-size:25px;font-weight:700;fill:white">1985</text>
+<text x="600" y="355" text-anchor="middle" style="font-size:18px;fill:white">教育体制改革</text>
+<text x="600" y="392" text-anchor="middle" style="font-size:16px;fill:#f7e9e3">开始改变旧办法</text>
+<path d="M460 345 H490" stroke="#8d4336" stroke-width="5"/>
+<path d="M710 345 H740" stroke="#8d4336" stroke-width="5"/>
+<polygon points="490,345 478,337 478,353" fill="#8d4336"/>
+<polygon points="740,345 728,337 728,353" fill="#8d4336"/>
+<rect x="740" y="185" width="390" height="320" rx="26" fill="#e5ecea"/>
+<text x="775" y="235" class="boxTitle">开始增加的新逻辑</text>
+<text x="775" y="290" class="body">本人选报志愿</text>
+<text x="775" y="335" class="body">学校推荐</text>
+<text x="775" y="380" class="body">用人单位择优录用</text>
+<text x="775" y="425" class="body">个人选择逐步增加</text>
+<rect x="70" y="555" width="1060" height="92" rx="18" fill="#fffdf8" stroke="#d8cfc2"/>
+<text x="100" y="592" class="body" style="font-weight:700">对1985年的普通大学生来说：</text>
+<text x="100" y="626" class="small">“毕业工作基本有着落”仍是普遍预期，但“去哪里、进什么单位”开始不再完全是一道只有一个答案的题。</text>
+</svg>
