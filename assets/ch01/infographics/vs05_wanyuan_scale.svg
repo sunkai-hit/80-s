@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+<style>
+  text{font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",sans-serif;fill:#27231f}
+  .title{font-size:44px;font-weight:700}.sub{font-size:19px;fill:#6e675f}
+  .big{font-size:62px;font-weight:800;fill:#8d4336}.mid{font-size:27px;font-weight:700}
+  .small{font-size:16px;fill:#746c63}.year{font-size:16px;fill:#5e5750}
+</style>
+<rect width="1200" height="700" fill="#f5f1e9"/>
+<text x="70" y="80" class="title">“万元户”到底是什么尺度？</text>
+<text x="70" y="118" class="sub">不要把1985年的“一万元”直接理解成今天的一万元</text>
+<rect x="70" y="165" width="360" height="190" rx="24" fill="#fffdf8" stroke="#d8cfc2"/>
+<text x="105" y="220" class="mid">1985年全国职工</text>
+<text x="105" y="268" class="mid">平均年工资</text>
+<text x="105" y="330" class="big">1148元</text>
+<rect x="465" y="165" width="665" height="190" rx="24" fill="#8d4336"/>
+<text x="505" y="222" style="font-family:'Noto Sans SC','Microsoft YaHei';font-size:27px;font-weight:700;fill:white">“万元户”</text>
+<text x="505" y="318" style="font-family:'Noto Sans SC','Microsoft YaHei';font-size:78px;font-weight:800;fill:white">10000元</text>
+<text x="940" y="312" style="font-family:'Noto Sans SC','Microsoft YaHei';font-size:24px;fill:#f7e9e3">≈ 8.7年平均工资</text>
+<text x="70" y="420" class="mid">把一年的平均工资看作一格：</text>
+<g transform="translate(70,455)">
+<rect x="0" y="0" width="103" height="92" rx="13" fill="#ded6cb"/><text x="51" y="56" text-anchor="middle" class="year">1年</text>
+<rect x="116" y="0" width="103" height="92" rx="13" fill="#ded6cb"/><text x="167" y="56" text-anchor="middle" class="year">2年</text>
+<rect x="232" y="0" width="103" height="92" rx="13" fill="#ded6cb"/><text x="283" y="56" text-anchor="middle" class="year">3年</text>
+<rect x="348" y="0" width="103" height="92" rx="13" fill="#ded6cb"/><text x="399" y="56" text-anchor="middle" class="year">4年</text>
+<rect x="464" y="0" width="103" height="92" rx="13" fill="#ded6cb"/><text x="515" y="56" text-anchor="middle" class="year">5年</text>
+<rect x="580" y="0" width="103" height="92" rx="13" fill="#ded6cb"/><text x="631" y="56" text-anchor="middle" class="year">6年</text>
+<rect x="696" y="0" width="103" height="92" rx="13" fill="#ded6cb"/><text x="747" y="56" text-anchor="middle" class="year">7年</text>
+<rect x="812" y="0" width="103" height="92" rx="13" fill="#ded6cb"/><text x="863" y="56" text-anchor="middle" class="year">8年</text>
+<rect x="928" y="0" width="103" height="92" rx="13" fill="#c78b72"/><text x="979" y="56" text-anchor="middle" class="year">+0.7</text>
+</g>
+<text x="70" y="610" class="small">这是收入尺度对比，不是购买力换算。它解释的是：为什么“一万元”会在当时成为足以改变社会评价的数字。</text>
+<text x="70" y="643" class="small">数据依据：国家统计局，1985年全国职工平均年工资1148元。</text>
+</svg>
