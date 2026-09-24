@@ -66,6 +66,31 @@
       const pCount=page.querySelectorAll('.page-flow > p').length;
       if(figCount>0 && pCount===0) issues.push({page:index+1,type:'visual-only'});
 
+      const visual=page.querySelector('.inline-visual-rail, figure.inline-visual');
+      if(visual){
+        const body=page.querySelector('.layout-body');
+        const br=body.getBoundingClientRect();
+        const vr=visual.getBoundingClientRect();
+        const topGap=vr.top-br.top;
+        const children=[...page.querySelectorAll('.page-flow > *')];
+        const vi=children.indexOf(visual);
+        const before=vi>=0?children.slice(0,vi).filter(el=>el.matches('p')):[];
+        const tail=before.slice(-4);
+        const shortRun=tail.length>=2 && tail.every(p=>p.textContent.trim().length<=34);
+
+        // Multi-image rails should start in the upper reading zone.
+        // Single images may start lower, but not after only a run of short lines.
+        if((visual.classList.contains('inline-visual-rail') && topGap>190) ||
+           (!visual.classList.contains('inline-visual-rail') && topGap>270 && shortRun)){
+          issues.push({
+            page:index+1,
+            type:'visual-start-too-low',
+            px:Math.round(topGap),
+            precedingShortRun:shortRun
+          });
+        }
+      }
+
       const note=page.querySelector('.margin-note');
       if(note){
         const nr=note.getBoundingClientRect();

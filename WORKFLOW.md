@@ -218,6 +218,7 @@ assets/chXX/generated/
 - 不使用“圆角框 + 箭头 + 节点”式企业 PPT 信息图语言。
 - AI视觉必须明确标注：**场景复原图 / 编辑复原图 / 编辑视觉**。
 - 不能暗示 AI 图是真实历史现场照片。
+- **AI / image2 正文视觉默认按 3:2 横幅直接生成**；不得依赖前端底板、留白或异常裁切补救画幅。
 
 ---
 
@@ -336,7 +337,14 @@ HTML 禁止承担：
 
 ```bash
 python scripts/check-local-assets.py
+python scripts/render-layout-review.py web/chXX/index.html
 ```
+
+第二个命令会：
+- 调用本机 Chrome / Edge / Chromium；
+- 读取页面内置 DOM 版式 QA；
+- 输出整章逐页截图到 `artifacts/layout-review/`；
+- 用于发布前人工检查异常留白、视觉起始位置和整体书页节奏。
 
 检查：
 - HTML 是否存在远程图片；

@@ -70,20 +70,21 @@
     <p>他说得非常自然。</p>
 
     <p>你忽然想起来，小时候好像从来没有听父亲说过“换工作”。他在这家厂待了很多年，再过很多年，大概也还会在那里。你认识的不少叔叔阿姨都是这样：同一个厂、同一个医院、同一所学校，从二十几岁一直干到退休。</p>
-    <p>这和你今天理解的一份工作不太一样。</p>
-    <p>父亲去的不是一家随时可以辞职跳槽的“公司”。</p>
-    <p>他去的是他的单位。</p>
 
     <div data-visual-rail>
       <figure>
-        <img src="../../assets/ch01/generated/distribution-1985.avif" alt="1985年高校毕业分配制度编辑复原图">
+        <img src="../../assets/ch01/generated/distribution-1985.webp" alt="1985年高校毕业分配制度编辑复原图">
         <figcaption>编辑复原图｜高校毕业分配制度与改革背景视觉复原，并非真实档案原件。</figcaption>
       </figure>
       <figure>
-        <img src="../../assets/ch01/generated/unit-life-radius.avif" alt="1980年代单位生活半径编辑复原图">
+        <img src="../../assets/ch01/generated/unit-life-radius.webp" alt="1980年代单位生活半径编辑复原图">
         <figcaption>编辑复原图｜大型国企和事业单位常见的“单位办社会”逻辑，不代表所有单位条件完全相同。</figcaption>
       </figure>
     </div>
+
+    <p>这和你今天理解的一份工作不太一样。</p>
+    <p>父亲去的不是一家随时可以辞职跳槽的“公司”。</p>
+    <p>他去的是他的单位。</p>
 
     <p>单位给他发工资，也可能决定家里什么时候能改善住房；厂里有食堂、医务室、澡堂，小时候你甚至上过厂里的幼儿园。逢年过节发什么东西，谁家孩子招工，谁准备结婚，谁在排队等房子，很多事情都和这一个组织发生联系。</p>
     <p>父亲这一辈子有很大一部分，被装在“单位”两个字里面。</p>
@@ -171,7 +172,7 @@
     <p>现在，它却开始有了另一个名字：机会。</p>
 
     <figure data-visual data-kind="generated" data-class="small">
-      <img src="../../assets/ch01/generated/wanyuan-1985.avif" alt="1985年万元户收入尺度编辑视觉">
+      <img src="../../assets/ch01/generated/wanyuan-1985.webp" alt="1985年万元户收入尺度编辑视觉">
       <figcaption>编辑视觉｜1985年全国职工平均年工资约1148元，一万元约为8.7年平均工资。这里比较的是收入尺度，不是今天的购买力换算。</figcaption>
     </figure>
 
@@ -407,7 +408,7 @@
     <p>四件东西放在同一张桌上，像四条完全不同的路。</p>
 
     <figure data-visual data-kind="generated" data-class="wide">
-      <img src="../../assets/ch01/generated/four-paths-1985-v5.webp" alt="1985年夜读书桌与四种人生选择的场景复原图">
+      <img src="../../assets/ch01/generated/four-paths-1985.webp" alt="1985年夜读书桌与四种人生选择的场景复原图">
       <figcaption>场景复原图｜工作证、广州地址、夜大学材料、TOEFL与航空信。画面用于组织叙事，不是历史现场照片。</figcaption>
     </figure>
 
@@ -462,6 +463,15 @@
   if(document.fonts&&document.fonts.ready) await document.fonts.ready;
   await BookChapterPaginator.build({sourceSelector:'#chapterSource',trackSelector:'#bookTrack'});
   BookReader.init();
+
+  if(new URLSearchParams(location.search).has('qa') && window.BookEditorialLayout){
+    const issues=BookEditorialLayout.auditLayout(document.getElementById('bookTrack'));
+    const node=document.createElement('script');
+    node.id='layoutQaData';
+    node.type='application/json';
+    node.textContent=JSON.stringify(issues).replace(/<\\/script/gi,'<\\/script');
+    document.body.appendChild(node);
+  }
 })();
 </script>
 </body>
