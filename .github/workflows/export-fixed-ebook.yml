@@ -1,0 +1,108 @@
+name: Export Fixed Layout Ebook
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/export-fixed-ebook.yml"
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install CJK fonts and tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+          fc-cache -f
+          python -m pip install --upgrade pillow reportlab
+          npm install puppeteer-core@24
+
+      - name: Capture final rendered pages
+        run: |
+          mkdir -p artifacts/fixed-ebook/pages
+          python -m http.server 8765 --bind 127.0.0.1 >/tmp/ebook-http.log 2>&1 &
+          echo $! >/tmp/ebook-http.pid
+          sleep 1
+          cat > /tmp/capture-book.mjs <<'NODE'
+          import puppeteer from 'puppeteer-core';
+          import fs from 'fs';
+          const browserPath = fs.existsSync('/usr/bin/google-chrome') ? '/usr/bin/google-chrome' : (fs.existsSync('/usr/bin/google-chrome-stable') ? '/usr/bin/google-chrome-stable' : '/usr/bin/chromium');
+          const browser = await puppeteer.launch({executablePath:browserPath,headless:true,args:['--no-sandbox','--disable-dev-shm-usage','--font-render-hinting=none']});
+          const page = await browser.newPage();
+          await page.setViewport({width:820,height:1080,deviceScaleFactor:2});
+          await page.goto('http://127.0.0.1:8765/web/ch01/index.html?qa=1',{waitUntil:'networkidle0',timeout:60000});
+          await page.evaluate(async()=>{if(document.fonts?.ready)await document.fonts.ready;await Promise.all([...document.images].map(img=>img.complete?Promise.resolve():new Promise(r=>{img.addEventListener('load',r,{once:true});img.addEventListener('error',r,{once:true});})));});
+          await page.waitForFunction(()=>document.querySelectorAll('.book-page').length>1,{timeout:30000});
+          await new Promise(r=>setTimeout(r,1200));
+          const total=await page.$$eval('.book-page',els=>els.length);
+          console.log('final pages:',total);
+          for(let i=0;i<total;i++){
+            await page.evaluate((idx)=>{
+              document.getElementById('__capture_root__')?.remove();
+              const source=document.querySelectorAll('.book-page')[idx];
+              const root=document.createElement('div');
+              root.id='__capture_root__';
+              root.style.cssText='position:fixed;left:0;top:0;width:820px;height:1080px;z-index:2147483647;background:#f6efe2;overflow:hidden;';
+              const clone=source.cloneNode(true);
+              clone.classList.remove('active','before','after');
+              clone.style.cssText+=';position:relative!important;left:0!important;top:0!important;width:820px!important;height:1080px!important;opacity:1!important;transform:none!important;pointer-events:none!important;display:block!important;margin:0!important;';
+              root.appendChild(clone);document.body.appendChild(root);document.documentElement.style.background='#f6efe2';document.body.style.margin='0';document.body.style.overflow='hidden';
+            },i);
+            const path='artifacts/fixed-ebook/pages/'+String(i+1).padStart(3,'0')+'.png';
+            await page.screenshot({path,type:'png',clip:{x:0,y:0,width:820,height:1080},captureBeyondViewport:false});
+          }
+          await browser.close();
+          NODE
+          node /tmp/capture-book.mjs
+          kill $(cat /tmp/ebook-http.pid) || true
+
+      - name: Package PDF and fixed-layout EPUB
+        run: |
+          cat > /tmp/package-book.py <<'PY'
+          from pathlib import Path
+          from reportlab.pdfgen import canvas
+          from reportlab.lib.utils import ImageReader
+          import zipfile, shutil, json
+          root=Path('artifacts/fixed-ebook'); pages=sorted((root/'pages').glob('*.png')); assert pages
+          pdf=root/'no-spoilers-china-ch01-fixed.pdf'; pw,ph=820*72/96,1080*72/96
+          c=canvas.Canvas(str(pdf),pagesize=(pw,ph),pageCompression=1); c.setTitle('No Spoilers China - Chapter 1')
+          for p in pages: c.drawImage(ImageReader(str(p)),0,0,width=pw,height=ph,preserveAspectRatio=False,mask='auto'); c.showPage()
+          c.save()
+          work=root/'epub-work'; shutil.rmtree(work,ignore_errors=True); (work/'META-INF').mkdir(parents=True); (work/'OEBPS/pages').mkdir(parents=True); (work/'OEBPS/images').mkdir(parents=True)
+          (work/'mimetype').write_text('application/epub+zip',encoding='ascii')
+          (work/'META-INF/container.xml').write_text('<?xml version="1.0" encoding="UTF-8"?><container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/package.opf" media-type="application/oebps-package+xml"/></rootfiles></container>',encoding='utf-8')
+          manifest=['<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>']; spine=[]; nav=[]
+          for i,p in enumerate(pages,1):
+              img=f'p{i:03d}.png'; x=f'p{i:03d}.xhtml'; shutil.copy2(p,work/'OEBPS/images'/img)
+              (work/'OEBPS/pages'/x).write_text(f'<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><meta charset="utf-8"/><meta name="viewport" content="width=820,height=1080"/><title>Page {i}</title><style>html,body{{margin:0;padding:0;width:820px;height:1080px;overflow:hidden}}img{{display:block;width:820px;height:1080px}}</style></head><body><img src="../images/{img}" alt="Page {i}"/></body></html>',encoding='utf-8')
+              manifest += [f'<item id="page{i}" href="pages/{x}" media-type="application/xhtml+xml"/>',f'<item id="img{i}" href="images/{img}" media-type="image/png"/>']; spine.append(f'<itemref idref="page{i}"/>'); nav.append(f'<li><a href="pages/{x}">Page {i}</a></li>')
+          (work/'OEBPS/nav.xhtml').write_text('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops"><head><meta charset="utf-8"/><title>Contents</title></head><body><nav epub:type="toc"><ol>'+''.join(nav)+'</ol></nav></body></html>',encoding='utf-8')
+          opf='<?xml version="1.0" encoding="UTF-8"?><package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bookid" prefix="rendition: http://www.idpf.org/vocab/rendition/#"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="bookid">urn:uuid:no-spoilers-china-ch01-fixed</dc:identifier><dc:title>If You Were Twenty in 1985</dc:title><dc:language>zh-CN</dc:language><meta property="dcterms:modified">2026-09-24T00:00:00Z</meta><meta property="rendition:layout">pre-paginated</meta><meta property="rendition:orientation">portrait</meta><meta property="rendition:spread">none</meta></metadata><manifest>'+''.join(manifest)+'</manifest><spine>'+''.join(spine)+'</spine></package>'
+          (work/'OEBPS/package.opf').write_text(opf,encoding='utf-8')
+          epub=root/'no-spoilers-china-ch01-fixed.epub'
+          with zipfile.ZipFile(epub,'w') as z:
+              z.write(work/'mimetype','mimetype',compress_type=zipfile.ZIP_STORED)
+              for q in sorted(work.rglob('*')):
+                  if q.is_file() and q.name!='mimetype': z.write(q,q.relative_to(work).as_posix(),compress_type=zipfile.ZIP_DEFLATED)
+          shutil.rmtree(work); print(json.dumps({'pages':len(pages),'pdf':str(pdf),'epub':str(epub)},ensure_ascii=False))
+          PY
+          python /tmp/package-book.py
+
+      - name: Upload fixed-layout ebook
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch01-fixed-layout-ebook
+          path: |
+            artifacts/fixed-ebook/no-spoilers-china-ch01-fixed.pdf
+            artifacts/fixed-ebook/no-spoilers-china-ch01-fixed.epub
+            artifacts/fixed-ebook/pages/001.png
+            artifacts/fixed-ebook/pages/002.png
+            artifacts/fixed-ebook/pages/003.png
+          if-no-files-found: error
+          retention-days: 14
