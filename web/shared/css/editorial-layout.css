@@ -1,0 +1,130 @@
+/* 《没有剧透的中国》纪实小说排版组件 V1.0
+ * Canonical rules: book/layout-standard.md
+ * This file defines reusable layout primitives. It is not meant to redraw complex visuals.
+ */
+
+:root{
+  --book-pw:820px;
+  --book-ph:1080px;
+  --book-paper:#fbf8f1;
+  --book-ink:#292522;
+  --book-muted:#81776e;
+  --book-accent:#8f3f32;
+  --book-line:#ddd3c6;
+  --book-margin-x:76px;
+  --book-head-top:44px;
+  --book-content-top:94px;
+  --book-content-bottom:76px;
+  --book-foot-bottom:24px;
+  --book-body-size:17.3px;
+  --book-body-leading:1.84;
+  --book-note-width:205px;
+  --book-inline-visual-width:43%;
+}
+
+.layout-body{
+  position:absolute;
+  left:var(--book-margin-x);
+  right:var(--book-margin-x);
+  top:var(--book-content-top);
+  bottom:var(--book-content-bottom);
+  overflow:hidden;
+}
+
+.prose-standard{
+  font-size:var(--book-body-size);
+  line-height:var(--book-body-leading);
+  letter-spacing:.01em;
+}
+
+.prose-standard p{margin:0 0 11px}
+.prose-standard p.short{margin-bottom:5px}
+
+.scene-opener .layout-body{padding-top:82px}
+.scene-opener .scene-kicker{
+  font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:10px;
+  letter-spacing:.16em;
+  color:#a08f82;
+  margin-bottom:15px;
+}
+.scene-opener .scene-title{
+  margin:0 0 78px;
+  font-size:33px;
+  line-height:1.25;
+  font-weight:700;
+}
+
+/* Bottom-right margin note.
+ * .margin-note-shape MUST come before prose text in DOM.
+ * JS sets --note-start based on the real rendered note height.
+ */
+.prose-with-note{
+  height:100%;
+  position:relative;
+}
+.margin-note-shape{
+  float:right;
+  width:var(--book-note-width);
+  height:100%;
+  margin-left:34px;
+  shape-outside:inset(var(--note-start,100%) 0 0 0);
+  pointer-events:none;
+}
+.margin-note{
+  position:absolute;
+  right:0;
+  bottom:0;
+  width:var(--book-note-width);
+  padding-top:12px;
+  border-top:1px solid #bca797;
+  color:#5d534b;
+}
+.margin-note .label{
+  font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:9px;
+  letter-spacing:.15em;
+  color:#9b6a5b;
+  margin-bottom:9px;
+}
+.margin-note h3{
+  margin:0 0 9px;
+  font-size:16px;
+  line-height:1.45;
+}
+.margin-note p{
+  margin:0 0 8px;
+  font-size:12px;
+  line-height:1.68;
+}
+.margin-note .source{
+  color:#8a7d73;
+  font-size:9.7px;
+  line-height:1.58;
+}
+
+.inline-visual{
+  float:right;
+  width:var(--book-inline-visual-width);
+  margin:48px 0 18px 28px;
+}
+.inline-visual img{
+  display:block;
+  width:100%;
+  max-height:385px;
+  object-fit:cover;
+}
+.inline-visual figcaption{
+  margin-top:8px;
+  font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:9.6px;
+  line-height:1.55;
+  color:#80746b;
+}
+
+.keyword{
+  font-weight:700;
+  color:#191613;
+  margin:0 .16em;
+  letter-spacing:.015em;
+}

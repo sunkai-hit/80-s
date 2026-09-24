@@ -1,6 +1,6 @@
 # Layout Lab｜第一章排版样张
 
-状态：**DRAFT / 仅用于确定全书基础版式**
+状态：**APPROVED BASELINE / 全书基础排版母版已确认**
 
 本目录不属于正式第一章页面，不修改 `web/ch01/index.html`。
 
@@ -85,3 +85,19 @@
 - 横线以上不再为了旁注预留右侧空白。
 - 右侧旁注只占页面下部，并与左侧下部正文共同受末行边界约束，避免被页脚遮挡。
 - 本轮仍只修改 `design/layout-lab/`，正式第一章保持冻结。
+
+
+---
+
+# 母版已固化
+
+2026-09-24，本样张已完成多轮实机审阅并被确认作为全书基础版式参考。
+
+正式标准已经沉淀到：
+- `book/layout-standard.md` —— 完整排版规则；
+- `web/shared/css/editorial-layout.css` —— 可复用 CSS 组件；
+- `web/shared/js/editorial-layout.js` —— 右下旁注自动环绕与基本页面 QA；
+- `WORKFLOW.md` —— 已更新生产流程，不再允许各章重新发明版式；
+- `book/visual-guide.md` —— 已更新视觉融入规则。
+
+以后章节应优先复用标准组件，而不是针对单页反复试 CSS。
