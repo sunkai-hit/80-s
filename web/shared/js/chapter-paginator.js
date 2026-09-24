@@ -36,7 +36,11 @@
       if(r.bottom>br.bottom+1)overflow=true;
     }
     const note=q('.margin-note',page);
-    if(note && note.getBoundingClientRect().top<br.top-1)overflow=true;
+    if(note){
+      const nr=note.getBoundingClientRect();
+      bottom=Math.max(bottom,nr.bottom);
+      if(nr.top<br.top-1 || nr.bottom>br.bottom+1)overflow=true;
+    }
     return {overflow,gap:Math.max(0,br.bottom-bottom),nodes};
   }
 
@@ -214,6 +218,48 @@
     return arr.at(-1)||null;
   }
 
+  function balanceSceneTail(track,sceneTitle){
+    const pages=[...track.querySelectorAll('.book-page')].filter(p=>p.dataset.scene===sceneTitle);
+    if(pages.length<2)return;
+
+    const prev=pages.at(-2);
+    const last=pages.at(-1);
+    let guard=0;
+
+    while(pageMetrics(last).gap>110 && guard++<8){
+      const p=lastMovableParagraph(prev);
+      if(!p)break;
+
+      const beforePrev=pageMetrics(prev);
+      const beforeLast=pageMetrics(last);
+      const beforeScore=Math.max(beforePrev.gap,beforeLast.gap);
+
+      const oldNext=p.nextSibling;
+      const anchor=firstMovableParagraph(last);
+      flowOf(last).insertBefore(p,anchor);
+
+      if(prev.classList.contains('has-note')&&window.BookEditorialLayout){
+        window.BookEditorialLayout.syncMarginNote(prev);
+      }
+      if(last.classList.contains('has-note')&&window.BookEditorialLayout){
+        window.BookEditorialLayout.syncMarginNote(last);
+      }
+
+      const afterPrev=pageMetrics(prev);
+      const afterLast=pageMetrics(last);
+      const afterScore=Math.max(afterPrev.gap,afterLast.gap);
+
+      // Keep the move only when it genuinely improves the spread and does not overflow.
+      if(afterLast.overflow || afterPrev.overflow || afterScore>=beforeScore-6 || afterPrev.gap>135){
+        flowOf(prev).insertBefore(p,oldNext);
+        if(prev.classList.contains('has-note')&&window.BookEditorialLayout){
+          window.BookEditorialLayout.syncMarginNote(prev);
+        }
+        break;
+      }
+    }
+  }
+
   function rebalanceScenePages(track,sceneTitle){
     const pages=[...track.querySelectorAll('.book-page')].filter(p=>p.dataset.scene===sceneTitle);
     for(let pass=0;pass<4;pass++){
@@ -240,6 +286,7 @@
       }
       if(!changed)break;
     }
+    balanceSceneTail(track,sceneTitle);
   }
 
   async function build({sourceSelector='#chapterSource',trackSelector='#bookTrack'}={}){

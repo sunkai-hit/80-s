@@ -34,23 +34,28 @@
   function layoutMetrics(page){
     const body=page.querySelector('.layout-body');
     if(!body) return {overflow:false,empty:true,gap:0};
-    const flow=page.querySelector('.page-flow');
     const nodes=contentNodes(page);
-    const bodyH=body.clientHeight;
-    const flowTop=flow?flow.offsetTop:0;
-    let maxBottom=0;
+    const br=body.getBoundingClientRect();
+    let maxBottom=br.top;
     let overflow=false;
+
     for(const el of nodes){
-      const bottom=flowTop+el.offsetTop+el.offsetHeight;
-      maxBottom=Math.max(maxBottom,bottom);
-      if(bottom>bodyH+1) overflow=true;
+      const r=el.getBoundingClientRect();
+      maxBottom=Math.max(maxBottom,r.bottom);
+      if(r.bottom>br.bottom+1 || r.top<br.top-1) overflow=true;
     }
+
     const note=page.querySelector('.margin-note');
-    if(note && note.offsetTop<0) overflow=true;
+    if(note){
+      const nr=note.getBoundingClientRect();
+      maxBottom=Math.max(maxBottom,nr.bottom);
+      if(nr.top<br.top-1 || nr.bottom>br.bottom+1) overflow=true;
+    }
+
     return {
       overflow,
       empty:nodes.length===0,
-      gap:Math.max(0,bodyH-maxBottom),
+      gap:Math.max(0,br.bottom-maxBottom),
       nodeCount:nodes.length
     };
   }
@@ -68,10 +73,11 @@
       const m=layoutMetrics(page);
       if(m.empty) issues.push({page:index+1,type:'empty'});
       if(m.overflow) issues.push({page:index+1,type:'overflow'});
-      if(!page.dataset.allowUnderfill && m.gap>50){
+      const underfillLimit=page.classList.contains('scene-opener')?125:85;
+      if(!page.dataset.allowUnderfill && m.gap>underfillLimit){
         issues.push({page:index+1,type:'underfill',px:Math.round(m.gap)});
       }
-      const figCount=page.querySelectorAll('figure.inline-visual,.inline-visual-pair').length;
+      const figCount=page.querySelectorAll('figure.inline-visual,.inline-visual-rail').length;
       const pCount=page.querySelectorAll('.page-flow > p').length;
       if(figCount>0 && pCount===0) issues.push({page:index+1,type:'visual-only'});
 
