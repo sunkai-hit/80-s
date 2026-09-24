@@ -1,0 +1,76 @@
+(function(){
+  function init(){
+    const pages=[...document.querySelectorAll('.book-page')];
+    const prev=document.getElementById('prevBtn');
+    const next=document.getElementById('nextBtn');
+    const counter=document.getElementById('currentPage');
+    const total=document.getElementById('totalPages');
+    const bar=document.getElementById('progressBar');
+    const viewport=document.getElementById('viewport');
+    let current=0,wheelLock=false,touchX=0,touchY=0;
+
+    total.textContent=pages.length;
+
+    function fit(){
+      const s=Math.min(
+        Math.max(280,innerWidth-120)/820,
+        Math.max(360,innerHeight-118)/1080,
+        1
+      );
+      document.documentElement.style.setProperty('--scale',s.toFixed(4));
+    }
+
+    function show(i){
+      i=Math.max(0,Math.min(pages.length-1,i));
+      current=i;
+      pages.forEach((p,k)=>{
+        p.classList.toggle('active',k===i);
+        p.classList.toggle('before',k<i);
+        p.classList.toggle('after',k>i);
+      });
+      counter.textContent=i+1;
+      bar.style.width=((i+1)/pages.length*100)+'%';
+      prev.disabled=i===0;
+      next.disabled=i===pages.length-1;
+      history.replaceState(null,'','#p'+(i+1));
+    }
+
+    function go(d){show(current+d)}
+    addEventListener('resize',fit);
+    fit();
+
+    const hash=location.hash.match(/p(\d+)/);
+    show(hash?Number(hash[1])-1:0);
+
+    prev.onclick=()=>go(-1);
+    next.onclick=()=>go(1);
+
+    addEventListener('keydown',e=>{
+      if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(1)}
+      else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(-1)}
+      else if(e.key==='Home')show(0);
+      else if(e.key==='End')show(pages.length-1);
+    });
+
+    viewport.addEventListener('wheel',e=>{
+      e.preventDefault();
+      if(wheelLock||Math.abs(e.deltaY)+Math.abs(e.deltaX)<8)return;
+      wheelLock=true;
+      go((e.deltaY||e.deltaX)>0?1:-1);
+      setTimeout(()=>wheelLock=false,520);
+    },{passive:false});
+
+    viewport.addEventListener('touchstart',e=>{
+      touchX=e.touches[0].clientX;touchY=e.touches[0].clientY;
+    },{passive:true});
+    viewport.addEventListener('touchend',e=>{
+      const x=e.changedTouches[0].clientX,y=e.changedTouches[0].clientY;
+      const dx=x-touchX,dy=y-touchY;
+      if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy))go(dx<0?1:-1);
+    },{passive:true});
+
+    document.querySelector('.reader').classList.add('ready');
+    document.body.classList.add('ready');
+  }
+  window.BookReader={init};
+})();
