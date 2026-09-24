@@ -107,7 +107,7 @@ body{
   font-size:10px;letter-spacing:.16em;color:#a08f82;margin-bottom:15px
 }
 .scene-page h2{
-  margin:0 0 48px;
+  margin:0 0 78px;
   font-size:33px;line-height:1.25;font-weight:700
 }
 
@@ -115,22 +115,32 @@ body{
 .cont-page .body{padding-top:0}
 .cont-page .copy{font-size:17.35px;line-height:1.85}
 
-/* 4. Notes live at the bottom of the outer rail, never floating mid-page. */
+/* 4. Full-width prose first; the note only occupies the lower-right area. */
 .note-page .body{
+  display:flex;
+  flex-direction:column
+}
+.note-top{
+  width:100%;
+  flex:none
+}
+.note-lower{
+  flex:1;
+  min-height:0;
+  margin-top:12px;
+  padding-top:14px;
+  border-top:1px solid #bca797;
   display:grid;
   grid-template-columns:minmax(0,1fr) 205px;
-  gap:34px
+  gap:34px;
+  align-items:end
 }
 .note-main{min-width:0}
 .note-rail{
-  height:100%;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-end
+  min-width:0;
+  align-self:end
 }
 .side-note{
-  padding-top:13px;
-  border-top:1px solid #bca797;
   color:#5d534b
 }
 .side-note .label{
@@ -240,18 +250,18 @@ body{
       <p class="short">“下午有电影。”</p>
       <p class="short">父亲抬起头：“学校放的？”</p>
       <p class="short">“不是。跟同学去电影院。”</p>
+      <p>母亲看了你一眼，没有追问。你低头喝粥，知道她大概已经猜到那个“同学”是谁。</p>
+      <p>父亲却完全没注意这些。他正盘算另一件事：“你毕业还有两年多吧？”</p>
+      <p class="short">“差不多。”</p>
     </div>
   </div>
-  <div class="page-foot"><span>场景起始页 · 标题下方留白，正文到统一末行</span><b>02</b></div>
+  <div class="page-foot"><span>场景起始页 · 标题上下留白平衡，正文到统一末行</span><b>02</b></div>
 </section>
 
         <section class="page cont-page" data-page="3">
   <div class="page-head"><span>星期六早上七点</span><span>第一章</span></div>
   <div class="body">
     <div class="copy">
-      <p>母亲看了你一眼，没有追问。你低头喝粥，知道她大概已经猜到那个“同学”是谁。</p>
-      <p>父亲却完全没注意这些。他正盘算另一件事：“你毕业还有两年多吧？”</p>
-      <p class="short">“差不多。”</p>
       <p class="short">“那时候不知道能分到哪里。能留本市最好。”</p>
       <p class="short">你说：“还早呢。”</p>
       <p>父亲摇摇头：“早什么？分配是大事。你们学校不错，只要别自己瞎折腾，工作总归有的。”</p>
@@ -266,6 +276,9 @@ body{
       <p>他说得非常自然。你忽然想起来，小时候好像从来没有听父亲说过“换工作”。他在这家厂待了很多年，再过很多年，大概也还会在那里。</p>
       <p>你认识的不少叔叔阿姨都是这样：同一个厂、同一个医院、同一所学校，从二十几岁一直干到退休。</p>
       <p>这和你今天理解的一份工作不太一样。</p>
+      <p>父亲去的不是一家随时可以辞职跳槽的“公司”。</p>
+      <p>他去的是他的单位。</p>
+      <p>单位给他发工资，也可能决定家里什么时候能改善住房；厂里有食堂、医务室、澡堂，小时候你甚至上过厂里的幼儿园。</p>
     </div>
   </div>
   <div class="page-foot"><span>连续正文页 · 固定首行与末行</span><b>03</b></div>
@@ -274,35 +287,34 @@ body{
         <section class="page note-page" data-page="4">
   <div class="page-head"><span>星期六早上七点</span><span>第一章</span></div>
   <div class="body">
-    <div class="note-main copy">
-      <p>父亲去的不是一家随时可以辞职跳槽的“公司”。</p>
-      <p>他去的是他的单位。</p>
-      <p>单位给他发工资，也可能决定家里什么时候能改善住房；厂里有食堂、医务室、澡堂，小时候你甚至上过厂里的幼儿园。逢年过节发什么东西，谁家孩子招工，谁准备结婚，谁在排队等房子，很多事情都和这一个组织发生联系。</p>
+    <div class="note-top copy">
+      <p>逢年过节发什么东西，谁家孩子招工，谁准备结婚，谁在排队等房子，很多事情都和这一个组织发生联系。</p>
       <p>父亲这一辈子有很大一部分，被装在“单位”两个字里面。</p>
       <p>所以当他说“有个好单位比什么都强”时，他想的并不仅仅是每个月那几十块钱工资。</p>
       <p>他想的是一整套可以看见的未来。</p>
       <p>而你还没有意识到，再过几年，这句话会越来越频繁地被年轻人质疑。</p>
-      <p>上午十点多，你出门去书店。</p>
-      <p>走到百货商店附近，有人在后面按了两下车铃。</p>
-      <p class="short">“哎！”</p>
-      <p>你回头，看见建军。你差一点没认出来。</p>
-      <p>他骑着一辆很新的自行车，车漆亮得刺眼，后座上还捆着一个鼓鼓囊囊的旅行包。更显眼的是他的衣服。你记得上一次见他，他还穿一件洗得有点发白的蓝夹克，现在身上换成了一件深色外套，式样你在本地商店里很少见。</p>
-      <p class="short">“新车？”你摸了摸车把。</p>
-      <p class="short">“嗯。”</p>
-      <p class="short">“哪来的？”</p>
-      <p class="short">“买的呗。”</p>
+      <p>上午十点多，你出门去书店。走到百货商店附近，有人在后面按了两下车铃。</p>
     </div>
-    <div class="note-rail">
-      <aside class="side-note">
-        <div class="label">时代旁注</div>
-        <h3>“包分配”</h3>
-        <p>1985年，高校毕业分配制度已经开始改革，但普通大学生的就业仍主要处在计划、学校推荐与单位接收体系里。</p>
-        <p>真正的悬念通常不是“有没有工作”，而是会去哪里、进入什么单位。</p>
-        <div class="source">旁注固定贴底；若同页有多个旁注，则从底部向上叠放，空白留在上方。</div>
-      </aside>
+    <div class="note-lower">
+      <div class="note-main copy">
+        <p class="short">“哎！”</p>
+        <p>你回头，看见建军。你差一点没认出来。</p>
+        <p>他骑着一辆很新的自行车，车漆亮得刺眼，后座上还捆着一个鼓鼓囊囊的旅行包。更显眼的是他的衣服。你记得上一次见他，他还穿一件洗得有点发白的蓝夹克，现在身上换成了一件深色外套，式样你在本地商店里很少见。</p>
+        <p class="short">“新车？”你摸了摸车把。</p>
+        <p class="short">“嗯。”</p>
+      </div>
+      <div class="note-rail">
+        <aside class="side-note">
+          <div class="label">时代旁注</div>
+          <h3>“单位”</h3>
+          <p>它不只是今天意义上的“公司”。在许多大型国企和事业单位里，工作还会连接住房、医疗、食堂、托幼、福利与退休。</p>
+          <p>因此父亲珍惜的“稳定”，实际是一整套可预期的生活。</p>
+          <div class="source">旁注只占页面下方右栏；横线以上的正文保持通栏。</div>
+        </aside>
+      </div>
     </div>
   </div>
-  <div class="page-foot"><span>正文 + 底部旁注</span><b>04</b></div>
+  <div class="page-foot"><span>通栏正文 + 底部时代旁注</span><b>04</b></div>
 </section>
 
         <section class="page photo-page" data-page="5">
