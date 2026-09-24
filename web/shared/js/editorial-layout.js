@@ -31,31 +31,41 @@
     );
   }
 
+  function visibleRects(el){
+    if(el.matches('p')){
+      const range=document.createRange();
+      range.selectNodeContents(el);
+      const rects=[...range.getClientRects()].filter(r=>r.width>0&&r.height>0);
+      if(rects.length)return rects;
+    }
+    return [el.getBoundingClientRect()];
+  }
+
   function layoutMetrics(page){
     const body=page.querySelector('.layout-body');
     if(!body) return {overflow:false,empty:true,gap:0};
     const nodes=contentNodes(page);
     const br=body.getBoundingClientRect();
-    let maxBottom=br.top;
+    let contentBottom=br.top;
     let overflow=false;
 
     for(const el of nodes){
-      const r=el.getBoundingClientRect();
-      maxBottom=Math.max(maxBottom,r.bottom);
-      if(r.bottom>br.bottom+1 || r.top<br.top-1) overflow=true;
+      for(const r of visibleRects(el)){
+        contentBottom=Math.max(contentBottom,r.bottom);
+        if(r.bottom>br.bottom+1 || r.top<br.top-1) overflow=true;
+      }
     }
 
     const note=page.querySelector('.margin-note');
     if(note){
       const nr=note.getBoundingClientRect();
-      maxBottom=Math.max(maxBottom,nr.bottom);
       if(nr.top<br.top-1 || nr.bottom>br.bottom+1) overflow=true;
     }
 
     return {
       overflow,
       empty:nodes.length===0,
-      gap:Math.max(0,br.bottom-maxBottom),
+      gap:Math.max(0,br.bottom-contentBottom),
       nodeCount:nodes.length
     };
   }

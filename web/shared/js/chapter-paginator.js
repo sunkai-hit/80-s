@@ -24,24 +24,41 @@
     );
   }
 
+  function visibleRects(el){
+    if(el.matches('p')){
+      const range=document.createRange();
+      range.selectNodeContents(el);
+      const rects=[...range.getClientRects()].filter(r=>r.width>0&&r.height>0);
+      if(rects.length)return rects;
+    }
+    return [el.getBoundingClientRect()];
+  }
+
   function pageMetrics(page){
     const body=bodyOf(page);
     const br=body.getBoundingClientRect();
     const nodes=contentNodes(page);
-    let bottom=br.top;
+    let contentBottom=br.top;
     let overflow=false;
+
     for(const el of nodes){
-      const r=el.getBoundingClientRect();
-      bottom=Math.max(bottom,r.bottom);
-      if(r.bottom>br.bottom+1)overflow=true;
+      for(const r of visibleRects(el)){
+        contentBottom=Math.max(contentBottom,r.bottom);
+        if(r.bottom>br.bottom+1 || r.top<br.top-1)overflow=true;
+      }
     }
+
     const note=q('.margin-note',page);
     if(note){
       const nr=note.getBoundingClientRect();
-      bottom=Math.max(bottom,nr.bottom);
       if(nr.top<br.top-1 || nr.bottom>br.bottom+1)overflow=true;
     }
-    return {overflow,gap:Math.max(0,br.bottom-bottom),nodes};
+
+    return {
+      overflow,
+      gap:Math.max(0,br.bottom-contentBottom),
+      nodes
+    };
   }
 
   function createPage(track,sceneTitle,{sceneStart=false}={}){
@@ -224,6 +241,11 @@
 
     const prev=pages.at(-2);
     const last=pages.at(-1);
+
+    // Complex editorial pages (notes / visuals) must keep their local prose context.
+    // Moving paragraphs out can create a blank left column beside a bottom-right note.
+    if(hasEditorial(prev)||hasEditorial(last))return;
+
     let guard=0;
 
     while(pageMetrics(last).gap>110 && guard++<8){
@@ -346,13 +368,62 @@
           rem.textContent=rest;
           flowOf(current).appendChild(rem);
           if(pageMetrics(current).overflow){
-            const info=removeEditorial(current);
-            if(info)pending.unshift(info);
-            if(pageMetrics(current).overflow){
+            let preserved=false;
+
+            if(hasEditorial(current)){
               rem.remove();
-              const bare=createPage(track,sceneTitle,{sceneStart:false});
-              flowOf(bare).appendChild(rem);
-              current=bare;
+              const chunks=splitSentences(rest);
+              if(chunks.length>1){
+                const fitted=document.createElement('p');
+                fitted.className=(sourceP.className+' split-continuation').trim();
+                flowOf(current).appendChild(fitted);
+
+                let usedOnEditorial=0;
+                for(let i=0;i<chunks.length;i++){
+                  fitted.textContent+=chunks[i];
+                  if(pageMetrics(current).overflow){
+                    fitted.textContent=fitted.textContent.slice(0,-chunks[i].length);
+                    break;
+                  }
+                  usedOnEditorial=i+1;
+                }
+
+                if(usedOnEditorial>0){
+                  const leftover=chunks.slice(usedOnEditorial).join('');
+                  preserved=true;
+                  if(leftover){
+                    current=startContinuation();
+                    const tail=document.createElement('p');
+                    tail.className=(sourceP.className+' split-continuation').trim();
+                    tail.textContent=leftover;
+                    flowOf(current).appendChild(tail);
+
+                    if(pageMetrics(current).overflow){
+                      const info=removeEditorial(current);
+                      if(info)pending.unshift(info);
+                      if(pageMetrics(current).overflow){
+                        tail.remove();
+                        const bare=createPage(track,sceneTitle,{sceneStart:false});
+                        flowOf(bare).appendChild(tail);
+                        current=bare;
+                      }
+                    }
+                  }
+                }else{
+                  fitted.remove();
+                }
+              }
+            }
+
+            if(!preserved){
+              const info=removeEditorial(current);
+              if(info)pending.unshift(info);
+              if(pageMetrics(current).overflow){
+                rem.remove();
+                const bare=createPage(track,sceneTitle,{sceneStart:false});
+                flowOf(bare).appendChild(rem);
+                current=bare;
+              }
             }
           }
           return;
