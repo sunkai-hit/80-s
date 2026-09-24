@@ -28,6 +28,9 @@
 10. [五人物独立叙事线与场景缺口 V0.1](book/character-independent-arcs-v0.1.md)
 11. [周启独立人生线 V0.1](book/zhouqi-independent-arc-v0.1.md)
 12. [林小梅独立人生线 V0.1](book/linxiaomei-independent-arc-v0.1.md)
+13. [刘建军独立创业线 V0.1](book/liujianjun-independent-arc-v0.1.md)
+14. [周玲独立生活线 V0.1](book/zhouling-independent-arc-v0.1.md)
+15. [王东独立人生线 V0.1](book/wangdong-independent-arc-v0.1.md)
 
 旧版五部30章结构已归档：
 [outline-v0.1-topic-structure.md](book/archive/outline-v0.1-topic-structure.md)
@@ -63,7 +66,9 @@
 - 周启独立人生线：V0.1 已深挖至 **34个场景单元 / 16个强A级独立场景**。
 - 林小梅独立人生线：V0.1 已深挖至 **50个场景单元 / 28个强A级候选**。
 - 双主线第一轮深挖已完成：周启34 / 小梅50。
-- 当前工作：继续深挖刘建军创业线、周玲工作/婚姻线、王东农村/独立经营线，之后合并全书总场景池。
+- 五人物独立人生线第一轮深挖：**全部完成**。
+- 候选场景单元：周启34 / 林小梅50 / 刘建军45 / 周玲38 / 王东41，共 **208个**（大量重叠，不代表最终写208场）。
+- 当前工作：将208个独立线单元与47个关系骨架场景合并去重，形成 **全书总场景母表 V0.1**。
 
 ## 旧第一章
 
