@@ -226,6 +226,18 @@
     });
   }
 
+  function waitForImages(root){
+    const images=[...root.querySelectorAll('img')];
+    if(!images.length)return Promise.resolve();
+    return Promise.all(images.map(img=>{
+      if(img.complete)return Promise.resolve();
+      return new Promise(resolve=>{
+        img.addEventListener('load',resolve,{once:true});
+        img.addEventListener('error',resolve,{once:true});
+      });
+    }));
+  }
+
   function firstMovableParagraph(page){
     return [...flowOf(page).children].find(el=>el.matches('p'));
   }
@@ -244,7 +256,7 @@
 
     // Complex editorial pages (notes / visuals) must keep their local prose context.
     // Moving paragraphs out can create a blank left column beside a bottom-right note.
-    if(hasEditorial(prev)||hasEditorial(last))return;
+    if(prev.classList.contains('has-note')||last.classList.contains('has-note'))return;
 
     let guard=0;
 
@@ -272,7 +284,7 @@
       const afterScore=Math.max(afterPrev.gap,afterLast.gap);
 
       // Keep the move only when it genuinely improves the spread and does not overflow.
-      if(afterLast.overflow || afterPrev.overflow || afterScore>=beforeScore-6 || afterPrev.gap>135){
+      if(afterLast.overflow || afterPrev.overflow || afterScore>=beforeScore-6 || afterPrev.gap>165){
         flowOf(prev).insertBefore(p,oldNext);
         if(prev.classList.contains('has-note')&&window.BookEditorialLayout){
           window.BookEditorialLayout.syncMarginNote(prev);
@@ -311,7 +323,7 @@
     balanceSceneTail(track,sceneTitle);
   }
 
-  async function build({sourceSelector='#chapterSource',trackSelector='#bookTrack'}={}){
+  async function build({sourceSelector='#chapterSource',trackSelector='#bookTrack',_imagesReady=false}={}){
     const source=q(sourceSelector);
     const track=q(trackSelector);
     if(!source||!track)throw new Error('chapter source/track missing');
@@ -494,6 +506,13 @@
 
     pruneEmptyPages(track);
     const pages=numberPages(track);
+
+    // First pass may run before historical images know their natural height.
+    // Wait once, then rebuild from the source template with cached dimensions.
+    if(!_imagesReady && track.querySelector('img')){
+      await waitForImages(track);
+      return build({sourceSelector,trackSelector,_imagesReady:true});
+    }
 
     if(window.BookEditorialLayout){
       window.BookEditorialLayout.syncMarginNotes(track);

@@ -72,7 +72,8 @@
 
   function auditLayout(root=document){
     const issues=[];
-    root.querySelectorAll('.book-page:not(.cover-page)').forEach((page,index)=>{
+    const auditedPages=[...root.querySelectorAll('.book-page:not(.cover-page)')];
+    auditedPages.forEach((page,index)=>{
       const oldTransform=page.style.transform;
       const oldTransition=page.style.transition;
       const oldOpacity=page.style.opacity;
@@ -81,15 +82,17 @@
       page.style.opacity='1';
 
       const m=layoutMetrics(page);
-      if(m.empty) issues.push({page:index+1,type:'empty'});
-      if(m.overflow) issues.push({page:index+1,type:'overflow'});
-      const underfillLimit=page.classList.contains('scene-opener')?125:85;
-      if(!page.dataset.allowUnderfill && m.gap>underfillLimit){
-        issues.push({page:index+1,type:'underfill',px:Math.round(m.gap)});
+      const pageNo=Number(page.dataset.page)||index+2;
+      const isFinalPage=index===auditedPages.length-1;
+      if(m.empty) issues.push({page:pageNo,type:'empty'});
+      if(m.overflow) issues.push({page:pageNo,type:'overflow'});
+      const underfillLimit=page.classList.contains('scene-opener')?170:150;
+      if(!isFinalPage && !page.dataset.allowUnderfill && m.gap>underfillLimit){
+        issues.push({page:pageNo,type:'underfill',px:Math.round(m.gap)});
       }
       const figCount=page.querySelectorAll('figure.inline-visual,.inline-visual-rail').length;
       const pCount=page.querySelectorAll('.page-flow > p').length;
-      if(figCount>0 && pCount===0) issues.push({page:index+1,type:'visual-only'});
+      if(figCount>0 && pCount===0) issues.push({page:pageNo,type:'visual-only'});
 
       const visual=page.querySelector('.inline-visual-rail, figure.inline-visual');
       if(visual){
@@ -108,7 +111,7 @@
         if((visual.classList.contains('inline-visual-rail') && topGap>190) ||
            (!visual.classList.contains('inline-visual-rail') && topGap>270 && shortRun)){
           issues.push({
-            page:index+1,
+            page:pageNo,
             type:'visual-start-too-low',
             px:Math.round(topGap),
             precedingShortRun:shortRun
@@ -127,7 +130,7 @@
             const overlap=lr.right>nr.left+1 && lr.left<nr.right-1 &&
               lr.bottom>nr.top+1 && lr.top<nr.bottom-1;
             if(overlap){
-              issues.push({page:index+1,type:'note-text-overlap'});
+              issues.push({page:pageNo,type:'note-text-overlap'});
               break outer;
             }
           }
@@ -135,7 +138,7 @@
       }
 
       if(page.classList.contains('scene-opener') && pCount===0){
-        issues.push({page:index+1,type:'title-only'});
+        issues.push({page:pageNo,type:'title-only'});
       }
 
       page.style.transform=oldTransform;

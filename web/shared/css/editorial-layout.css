@@ -177,3 +177,27 @@
   line-height:1.55;
   color:#80746b;
 }
+
+
+/* Chapter editorial tuning that also defines reusable visual roles. */
+.inline-visual.income-scale{
+  width:32%;
+  margin-left:22px;
+}
+.inline-visual.document-visual{
+  width:52%;
+  margin-left:28px;
+}
+
+.inline-visual-rail[data-count="2"]{
+  min-height:590px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.inline-visual-rail[data-count="3"]{
+  min-height:720px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
