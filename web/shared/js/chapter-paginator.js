@@ -2,23 +2,34 @@
   const q=(s,r=document)=>r.querySelector(s);
 
   function splitSentences(text){
-    const out=[];
-    let buf='';
+    const out=[]; let buf='';
     for(const ch of text){
       buf+=ch;
-      if('。！？；'.includes(ch)) { out.push(buf); buf=''; }
+      if('。！？；'.includes(ch)){ out.push(buf); buf=''; }
     }
     if(buf) out.push(buf);
     return out.length?out:[text];
   }
 
-  function pageOverflow(page){
-    const body=q('.layout-body',page);
-    return body.scrollHeight>body.clientHeight+2;
+  function flowOf(page){return q('.page-flow',page)}
+  function bodyOf(page){return q('.layout-body',page)}
+
+  function contentNodes(page){
+    return [...flowOf(page).children].filter(el=>
+      !el.classList.contains('margin-note-shape') &&
+      (el.matches('p')||el.matches('figure.inline-visual'))
+    );
   }
 
-  function contentAmount(page){
-    return q('.layout-body',page).scrollHeight/q('.layout-body',page).clientHeight;
+  function pageOverflow(page){
+    const body=bodyOf(page);
+    const br=body.getBoundingClientRect();
+    for(const el of contentNodes(page)){
+      if(el.getBoundingClientRect().bottom>br.bottom+1) return true;
+    }
+    const note=q('.margin-note',page);
+    if(note && note.getBoundingClientRect().top<br.top-1) return true;
+    return false;
   }
 
   function createPage(track,sceneTitle,{sceneStart=false}={}){
@@ -28,9 +39,10 @@
       '<div class="page-head"><span class="scene-running"></span><span>第一章</span></div>'+
       '<div class="layout-body">'+
         (sceneStart?'<div class="scene-kicker">SCENE</div><h2 class="scene-title"></h2>':'')+
-        '<div class="page-flow prose-with-note prose-standard"></div>'+
+        '<div class="page-flow prose-standard"></div>'+
       '</div>'+
       '<div class="page-foot"><span>没有剧透的中国</span><b></b></div>';
+
     q('.scene-running',page).textContent=sceneStart?'没有剧透的中国':sceneTitle;
     if(sceneStart){
       const title=q('.scene-title',page);
@@ -41,7 +53,33 @@
     return page;
   }
 
-  function flowOf(page){return q('.page-flow',page)}
+  function removeNote(page){
+    page.classList.remove('has-note');
+    q('.margin-note-shape',page)?.remove();
+    q('.margin-note',page)?.remove();
+  }
+
+  function installNote(page,source){
+    removeNote(page);
+    const body=bodyOf(page);
+    const flow=flowOf(page);
+
+    const shape=document.createElement('span');
+    shape.className='margin-note-shape';
+    shape.setAttribute('aria-hidden','true');
+    flow.insertBefore(shape,flow.firstChild);
+
+    const note=document.createElement('aside');
+    note.className='margin-note';
+    note.innerHTML=
+      '<div class="label">'+(source.dataset.label||'时代旁注')+'</div>'+
+      '<h3>'+source.dataset.title+'</h3>'+
+      '<div class="note-copy">'+source.innerHTML+'</div>';
+    body.appendChild(note);
+    page.classList.add('has-note');
+
+    if(window.BookEditorialLayout) window.BookEditorialLayout.syncMarginNote(page);
+  }
 
   function normalizeParagraph(source){
     const p=source.cloneNode(true);
@@ -53,23 +91,25 @@
     const flow=flowOf(page);
     const p=normalizeParagraph(source);
     flow.appendChild(p);
-    if(!pageOverflow(page)) return {page,remainder:null};
+    if(window.BookEditorialLayout && page.classList.contains('has-note')){
+      window.BookEditorialLayout.syncMarginNote(page);
+    }
+    if(!pageOverflow(page)) return page;
 
-    flow.removeChild(p);
+    p.remove();
 
-    // Short/marked-up paragraphs move as a whole.
+    // Marked-up/short paragraphs move whole; normal long paragraphs may split at sentence boundaries.
     if(source.children.length || source.classList.contains('keep-together') || source.textContent.length<34){
       const next=newContinuation();
       flowOf(next).appendChild(p);
-      return {page:next,remainder:null};
+      return next;
     }
 
-    // Try sentence-level split so ordinary pages reach the common last-line zone.
     const parts=splitSentences(source.textContent);
     if(parts.length<2){
       const next=newContinuation();
       flowOf(next).appendChild(p);
-      return {page:next,remainder:null};
+      return next;
     }
 
     const partial=document.createElement('p');
@@ -86,21 +126,21 @@
     }
 
     if(used===0){
-      flow.removeChild(partial);
+      partial.remove();
       const next=newContinuation();
       flowOf(next).appendChild(p);
-      return {page:next,remainder:null};
+      return next;
     }
 
     const rest=parts.slice(used).join('');
-    if(!rest) return {page,remainder:null};
+    if(!rest) return page;
 
     const next=newContinuation();
     const rem=document.createElement('p');
     rem.className=(source.className+' split-continuation').trim();
     rem.textContent=rest;
     flowOf(next).appendChild(rem);
-    return {page:next,remainder:null};
+    return next;
   }
 
   function makeVisual(source){
@@ -112,18 +152,14 @@
   }
 
   function appendVisual(page,source,newContinuation){
-    // Notes and inline visuals use different wrap systems; keep them on separate pages.
+    // Keep note and visual wrap systems separate, but never create an image-only page intentionally.
     if(q('.margin-note',page)) page=newContinuation();
-
-    // Avoid dropping a large visual into the last sliver of a page.
-    const body=q('.layout-body',page);
-    const used=body.scrollHeight/body.clientHeight;
-    if(used>.72) page=newContinuation();
 
     let fig=makeVisual(source);
     flowOf(page).appendChild(fig);
+
     if(pageOverflow(page)){
-      flowOf(page).removeChild(fig);
+      fig.remove();
       page=newContinuation();
       fig=makeVisual(source);
       flowOf(page).appendChild(fig);
@@ -131,35 +167,41 @@
     return page;
   }
 
+  function moveContextToNewPage(fromPage,toPage,count){
+    const candidates=[...flowOf(fromPage).children]
+      .filter(el=>el.matches('p') && !el.classList.contains('split-continuation'));
+    const moved=candidates.slice(-count);
+    for(const el of moved) flowOf(toPage).appendChild(el);
+    return moved.length;
+  }
+
   function attachNote(page,source,newContinuation){
-    if(q('.margin-note',page) || q('.inline-visual',page)) page=newContinuation();
-    if(contentAmount(page)>.80) page=newContinuation();
-
-    const flow=flowOf(page);
-    const shape=document.createElement('span');
-    shape.className='margin-note-shape';
-    shape.setAttribute('aria-hidden','true');
-
-    const note=document.createElement('aside');
-    note.className='margin-note';
-    note.innerHTML=
-      '<div class="label">'+(source.dataset.label||'时代旁注')+'</div>'+
-      '<h3>'+source.dataset.title+'</h3>'+
-      '<div class="note-copy">'+source.innerHTML+'</div>';
-
-    flow.insertBefore(shape,flow.firstChild);
-    flow.appendChild(note);
-    if(window.BookEditorialLayout) window.BookEditorialLayout.syncMarginNotes(page);
-
-    if(pageOverflow(page)){
-      shape.remove();note.remove();
-      page=newContinuation();
-      const f=flowOf(page);
-      f.insertBefore(shape,f.firstChild);
-      f.appendChild(note);
-      if(window.BookEditorialLayout) window.BookEditorialLayout.syncMarginNotes(page);
+    // A page with a visual gets a clean note page, carrying nearby prose with it.
+    if(q('figure.inline-visual',page)){
+      const next=newContinuation();
+      moveContextToNewPage(page,next,Number(source.dataset.context||2));
+      page=next;
     }
-    return page;
+
+    installNote(page,source);
+    if(!pageOverflow(page)) return page;
+
+    removeNote(page);
+
+    const next=newContinuation();
+    const wanted=Math.max(1,Number(source.dataset.context||2));
+    moveContextToNewPage(page,next,wanted);
+    installNote(next,source);
+
+    // If context + note is still too tall, trim context back to one paragraph.
+    while(pageOverflow(next)){
+      const paras=[...flowOf(next).children].filter(el=>el.matches('p'));
+      if(paras.length<=1) break;
+      const first=paras[0];
+      flowOf(page).appendChild(first);
+      if(window.BookEditorialLayout) window.BookEditorialLayout.syncMarginNote(next);
+    }
+    return next;
   }
 
   function createCover(track,source){
@@ -178,6 +220,20 @@
     track.appendChild(page);
   }
 
+  function isEmptyPage(page){
+    if(page.classList.contains('cover-page')) return false;
+    const hasText=flowOf(page)?.querySelector('p');
+    const hasVisual=flowOf(page)?.querySelector('figure.inline-visual');
+    const hasNote=q('.margin-note',page);
+    return !hasText && !hasVisual && !hasNote;
+  }
+
+  function pruneEmptyPages(track){
+    [...track.querySelectorAll('.book-page')].forEach(page=>{
+      if(isEmptyPage(page)) page.remove();
+    });
+  }
+
   function numberPages(track){
     const pages=[...track.querySelectorAll('.book-page')];
     pages.forEach((p,i)=>{
@@ -193,6 +249,7 @@
     const source=q(sourceSelector);
     const track=q(trackSelector);
     if(!source||!track) throw new Error('chapter source/track missing');
+
     track.innerHTML='';
     createCover(track,source);
 
@@ -204,18 +261,24 @@
 
       for(const node of [...scene.children]){
         if(node.matches('p')){
-          const result=appendParagraph(current,node,newContinuation);
-          current=result.page;
+          current=appendParagraph(current,node,newContinuation);
         }else if(node.matches('figure[data-visual]')){
           current=appendVisual(current,node,newContinuation);
         }else if(node.matches('aside[data-note]')){
           current=attachNote(current,node,newContinuation);
         }
-        if(window.BookEditorialLayout) window.BookEditorialLayout.syncMarginNotes(current);
+        if(window.BookEditorialLayout && current.classList.contains('has-note')){
+          window.BookEditorialLayout.syncMarginNote(current);
+        }
       }
+
+      // A scene is genuinely ending here, so its final page may be underfilled.
+      current.dataset.allowUnderfill='true';
     }
 
+    pruneEmptyPages(track);
     const pages=numberPages(track);
+
     if(window.BookEditorialLayout){
       window.BookEditorialLayout.syncMarginNotes(track);
       requestAnimationFrame(()=>window.BookEditorialLayout.auditLayout(track));

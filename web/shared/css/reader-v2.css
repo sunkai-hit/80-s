@@ -110,3 +110,10 @@ body.ready .loading{display:none}
   .prev{left:16px}.next{right:16px}.progress{margin:0 55px}
 }
 @media(prefers-reduced-motion:reduce){.book-page{transition:none}}
+
+.scene-title.long{font-size:28px;max-width:620px}
+.layout-error{
+  position:absolute;inset:94px 76px 76px;display:flex;align-items:center;justify-content:center;
+  border:1px dashed #b66d5d;color:#8f3f32;font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:13px;line-height:1.7;text-align:center;padding:24px
+}

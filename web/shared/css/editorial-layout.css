@@ -1,6 +1,5 @@
-/* 《没有剧透的中国》纪实小说排版组件 V1.0
+/* 《没有剧透的中国》纪实小说排版组件 V1.1
  * Canonical rules: book/layout-standard.md
- * This file defines reusable layout primitives. It is not meant to redraw complex visuals.
  */
 
 :root{
@@ -31,6 +30,11 @@
   overflow:hidden;
 }
 
+.page-flow{
+  position:relative;
+  min-height:0;
+}
+
 .prose-standard{
   font-size:var(--book-body-size);
   line-height:var(--book-body-leading);
@@ -56,17 +60,14 @@
 }
 
 /* Bottom-right margin note.
- * .margin-note-shape MUST come before prose text in DOM.
- * JS sets --note-start based on the real rendered note height.
+ * The note itself is positioned against .layout-body.
+ * The shape is the only element inside prose flow and reserves space
+ * ONLY in the note's real vertical zone.
  */
-.prose-with-note{
-  height:100%;
-  position:relative;
-}
 .margin-note-shape{
   float:right;
   width:var(--book-note-width);
-  height:100%;
+  height:var(--note-body-height,0px);
   margin-left:34px;
   shape-outside:inset(var(--note-start,100%) 0 0 0);
   pointer-events:none;
@@ -111,8 +112,23 @@
 .inline-visual img{
   display:block;
   width:100%;
-  max-height:385px;
+  height:280px;
   object-fit:cover;
+}
+.inline-visual.generated img{
+  height:310px;
+  object-fit:contain;
+  background:#eee7dc;
+}
+.inline-visual.small{width:38%}
+.inline-visual.small img{height:250px}
+.inline-visual.small.generated img{height:285px}
+.inline-visual.wide{width:47%}
+.inline-visual.wide img{height:330px}
+.inline-visual.left{
+  float:left;
+  margin-left:0;
+  margin-right:28px;
 }
 .inline-visual figcaption{
   margin-top:8px;
