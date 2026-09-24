@@ -31,6 +31,7 @@
 13. [刘建军独立创业线 V0.1](book/liujianjun-independent-arc-v0.1.md)
 14. [周玲独立生活线 V0.1](book/zhouling-independent-arc-v0.1.md)
 15. [王东独立人生线 V0.1](book/wangdong-independent-arc-v0.1.md)
+16. [34章双暗线地图 V0.1](book/chapter-dual-underlay-map-v0.1.md)
 
 旧版五部30章结构已归档：
 [outline-v0.1-topic-structure.md](book/archive/outline-v0.1-topic-structure.md)
@@ -100,3 +101,6 @@
 
 
 - 正式正文文风：已锁定 `book/style-guide.md` **V3.0**，采用“克制现实主义 + 贴身有限第三人称 + 生活口语 + 低抒情 + 低解释 + 强细节”。正式试写必须执行风格QA。
+
+- 34章双暗线地图 V0.1：已建立。每章后台同时控制“人生暗线 + 时代暗线 + 读者实际生活过的年代切片”，正式正文不直接解释这两条暗线。
+- 三次文风压力测试：《回来》《晚一天》《星期天》均已通过；下一阶段进入正式顺序写作。
