@@ -117,8 +117,12 @@
   background:transparent;
 }
 .inline-visual.generated img{
-  aspect-ratio:3 / 2;
+  display:block;
+  width:100%;
+  aspect-ratio:4 / 5;
+  height:auto;
   object-fit:cover;
+  object-position:center;
   background:transparent;
 }
 .inline-visual.small{width:38%}
@@ -165,7 +169,7 @@
   display:block;
   width:100%;
   height:auto;
-  aspect-ratio:3 / 2;
+  max-height:none;
   object-fit:cover;
   background:transparent;
 }
@@ -200,4 +204,10 @@
   display:flex;
   flex-direction:column;
   justify-content:space-between;
+}
+
+.inline-visual-rail figure.generated img{
+  aspect-ratio:4 / 5;
+  object-fit:cover;
+  object-position:center;
 }
