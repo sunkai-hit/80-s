@@ -469,7 +469,7 @@
     const node=document.createElement('script');
     node.id='layoutQaData';
     node.type='application/json';
-    node.textContent=JSON.stringify(issues).replace(/<\\/script/gi,'<\\/script');
+    node.textContent=JSON.stringify(issues).replace(/<\/script/gi,'<\\/script');
     document.body.appendChild(node);
   }
 })();
