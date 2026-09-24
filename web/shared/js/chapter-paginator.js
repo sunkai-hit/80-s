@@ -140,8 +140,9 @@
     const figures=[...rail.querySelectorAll('figure')];
     rail.dataset.count=String(figures.length);
     figures.forEach(fig=>{
+      const kind=fig.dataset.kind||source.dataset.kind||'generated';
       fig.removeAttribute('data-visual');
-      fig.className='';
+      fig.className=kind;
     });
     return rail;
   }
@@ -290,6 +291,46 @@
           window.BookEditorialLayout.syncMarginNote(prev);
         }
         break;
+      }
+    }
+  }
+
+  function repairVisualStarts(track){
+    const pages=[...track.querySelectorAll('.book-page:not(.cover-page)')];
+    for(const page of pages){
+      const flow=flowOf(page);
+      if(!flow)continue;
+      const visual=flow.querySelector(':scope > .inline-visual-rail, :scope > figure.inline-visual');
+      if(!visual)continue;
+
+      const children=[...flow.children];
+      const index=children.indexOf(visual);
+      if(index<=0)continue;
+
+      const before=children.slice(0,index).filter(el=>el.matches('p'));
+      if(!before.length)continue;
+
+      const topGap=visual.offsetTop;
+      const textChars=before.reduce((n,p)=>n+p.textContent.trim().length,0);
+      const textHeight=before.reduce((n,p)=>n+p.offsetHeight,0);
+
+      const abnormalLead=
+        before.length<=3 &&
+        textChars<=130 &&
+        textHeight<=170 &&
+        topGap>48;
+
+      if(!abnormalLead)continue;
+
+      const originalNext=visual.nextSibling;
+      flow.insertBefore(visual,flow.firstChild);
+
+      if(page.classList.contains('has-note')&&window.BookEditorialLayout){
+        window.BookEditorialLayout.syncMarginNote(page);
+      }
+
+      if(pageMetrics(page).overflow){
+        flow.insertBefore(visual,originalNext);
       }
     }
   }
@@ -504,6 +545,7 @@
       rebalanceScenePages(track,sceneTitle);
     }
 
+    repairVisualStarts(track);
     pruneEmptyPages(track);
     const pages=numberPages(track);
 
@@ -516,7 +558,7 @@
 
     if(window.BookEditorialLayout){
       window.BookEditorialLayout.syncMarginNotes(track);
-      requestAnimationFrame(()=>window.BookEditorialLayout.auditLayout(track));
+      requestAnimationFrame(()=>window.BookEditorialLayout.preflightLayout(document));
     }
     return pages;
   }
