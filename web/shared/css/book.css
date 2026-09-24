@@ -41,3 +41,41 @@
 .generated-media{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%}
 .generated-media img{display:block;max-width:100%;max-height:842px;width:auto;height:auto;object-fit:contain;box-shadow:0 10px 28px rgba(57,43,30,.12)}
 .generated-media figcaption{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:10.5px;line-height:1.55;color:#80756a;margin-top:12px;max-width:95%}
+
+/* V4: publication-like page rhythm */
+.book-page{padding:88px 72px 54px}
+.page-head{top:42px;padding-bottom:9px;color:#8d8178}
+.page-body h2{margin:16px 0 24px}
+.book-page.continuation .page-body{padding-top:4px}
+.book-page.continuation .page-copy{font-size:17px;line-height:1.82}
+.book-page.continuation .page-head span:first-child{opacity:.64}
+
+.insertPage{background:radial-gradient(circle at 20% 10%,rgba(255,255,255,.7),transparent 24%),var(--paper)}
+.insertPage .page-body{display:block}
+.insert-layout{display:grid;grid-template-columns:1.02fr .98fr;gap:30px;align-items:start;height:100%;padding-top:10px}
+.insert-layout.reverse{grid-template-columns:.98fr 1.02fr}
+.insert-layout.reverse .insert-side{order:2}
+.insert-layout.reverse .insert-figure{order:1}
+.insert-side{padding-top:4px}
+.insert-kicker{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:10px;letter-spacing:.16em;color:#9b8a7e;margin-bottom:14px}
+.insert-side h2{font-size:29px;line-height:1.3;margin:0 0 16px;font-weight:700}
+.insert-side p{font-size:15.8px;line-height:1.82;color:#4f463f;margin:0 0 12px}
+.insert-side .insert-lead{font-size:17.4px;line-height:1.82;color:#332d28}
+.insert-list{margin:6px 0 12px;padding-left:1.25em}
+.insert-list li{font-size:15px;line-height:1.75;margin:0 0 8px;color:#554b43}
+.insert-note{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:11.5px!important;line-height:1.72!important;color:#81756b!important;border-top:1px solid #ddd1c2;padding-top:11px;margin-top:10px!important}
+.insert-figure{margin:0;align-self:start}
+.insert-figure img{display:block;width:100%;max-height:650px;object-fit:cover;border-radius:3px;box-shadow:0 10px 24px rgba(57,43,30,.12)}
+.insert-figure.doc img{object-fit:contain;background:#eee6db}
+.insert-figure figcaption{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:10.5px;line-height:1.6;color:#81766c;margin-top:9px}
+.insertPage .page-head span:first-child{opacity:.66}
+
+@media(max-width:760px){
+  .book-page{padding-top:82px}
+  .page-head{top:38px}
+  .insert-layout,.insert-layout.reverse{grid-template-columns:1fr;gap:14px;overflow:auto}
+  .insert-layout.reverse .insert-side,.insert-layout.reverse .insert-figure{order:unset}
+  .insert-figure img{max-height:420px}
+  .insert-side h2{font-size:25px}
+  .insert-side p{font-size:14.8px}
+}
