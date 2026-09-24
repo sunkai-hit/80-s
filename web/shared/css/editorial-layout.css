@@ -144,3 +144,30 @@
   margin:0 .16em;
   letter-spacing:.015em;
 }
+
+
+/* Two related visuals on one page: use a planned pair, never two competing floats. */
+.inline-visual-pair{
+  width:100%;
+  clear:both;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin:22px 0 16px;
+  break-inside:avoid;
+}
+.inline-visual-pair figure{margin:0;min-width:0}
+.inline-visual-pair img{
+  display:block;
+  width:100%;
+  height:220px;
+  object-fit:contain;
+  background:#eee7dc;
+}
+.inline-visual-pair figcaption{
+  margin-top:7px;
+  font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:9.2px;
+  line-height:1.5;
+  color:#80746b;
+}

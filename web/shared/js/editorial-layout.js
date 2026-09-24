@@ -7,8 +7,12 @@
     if(!body||!shape||!note) return;
 
     const bodyH=body.clientHeight;
-    const noteH=Math.ceil(note.getBoundingClientRect().height);
-    const start=Math.max(0,bodyH-noteH);
+    // IMPORTANT: offsetHeight is unscaled CSS layout height.
+    // getBoundingClientRect() is affected by .page-scale transform and caused
+    // the wrap zone to start too low, letting prose intrude into the note.
+    const noteH=Math.ceil(note.offsetHeight);
+    const safety=14;
+    const start=Math.max(0,bodyH-noteH-safety);
 
     shape.style.setProperty('--note-body-height',bodyH+'px');
     shape.style.setProperty('--note-start',start+'px');
@@ -58,9 +62,28 @@
       if(!page.dataset.allowUnderfill && m.gap>50){
         issues.push({page:index+1,type:'underfill',px:Math.round(m.gap)});
       }
-      const figCount=page.querySelectorAll('figure.inline-visual').length;
+      const figCount=page.querySelectorAll('figure.inline-visual,.inline-visual-pair').length;
       const pCount=page.querySelectorAll('.page-flow > p').length;
       if(figCount>0 && pCount===0) issues.push({page:index+1,type:'visual-only'});
+
+      const note=page.querySelector('.margin-note');
+      if(note){
+        const nr=note.getBoundingClientRect();
+        outer:
+        for(const p of page.querySelectorAll('.page-flow > p')){
+          const range=document.createRange();
+          range.selectNodeContents(p);
+          for(const lr of range.getClientRects()){
+            const overlap=lr.right>nr.left+1 && lr.left<nr.right-1 &&
+              lr.bottom>nr.top+1 && lr.top<nr.bottom-1;
+            if(overlap){
+              issues.push({page:index+1,type:'note-text-overlap'});
+              break outer;
+            }
+          }
+        }
+      }
+
       if(page.classList.contains('scene-opener') && pCount===0){
         issues.push({page:index+1,type:'title-only'});
       }

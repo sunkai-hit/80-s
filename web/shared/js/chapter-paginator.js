@@ -13,14 +13,14 @@
 
   function flowOf(page){return q('.page-flow',page)}
   function bodyOf(page){return q('.layout-body',page)}
-  function hasEditorial(page){return !!q('figure.inline-visual,.margin-note',page)}
+  function hasEditorial(page){return !!q('figure.inline-visual,.inline-visual-pair,.margin-note',page)}
 
   function contentNodes(page){
     const flow=flowOf(page);
     if(!flow)return [];
     return [...flow.children].filter(el=>
       !el.classList.contains('margin-note-shape') &&
-      (el.matches('p')||el.matches('figure.inline-visual'))
+      (el.matches('p')||el.matches('figure.inline-visual')||el.matches('.inline-visual-pair'))
     );
   }
 
@@ -91,6 +91,7 @@
   function removeEditorial(page){
     const info=page._editorialSource||null;
     q('figure.inline-visual',page)?.remove();
+    q('.inline-visual-pair',page)?.remove();
     removeNote(page);
     page._editorialSource=null;
     return info;
@@ -111,12 +112,39 @@
     return fig;
   }
 
+  function makeVisualPair(source){
+    const pair=source.cloneNode(true);
+    pair.removeAttribute('data-visual-pair');
+    pair.className='inline-visual-pair';
+    pair.querySelectorAll('figure').forEach(fig=>{
+      fig.removeAttribute('data-visual');
+      fig.className='';
+    });
+    return pair;
+  }
+
+  function installVisualPair(page,source){
+    const pair=makeVisualPair(source);
+    flowOf(page).appendChild(pair);
+    page._editorialSource={type:'visual-pair',source};
+    return pair;
+  }
+
   function tryPlaceEditorial(page,item){
     if(!item||hasEditorial(page))return false;
     if(item.type==='visual'){
       const fig=installVisual(page,item.source);
       if(pageMetrics(page).overflow){
         fig.remove();
+        page._editorialSource=null;
+        return false;
+      }
+      return true;
+    }
+    if(item.type==='visual-pair'){
+      const pair=installVisualPair(page,item.source);
+      if(pageMetrics(page).overflow){
+        pair.remove();
         page._editorialSource=null;
         return false;
       }
@@ -297,6 +325,12 @@
 
         if(node.matches('figure[data-visual]')){
           const item={type:'visual',source:node};
+          if(!tryPlaceEditorial(current,item))pending.push(item);
+          continue;
+        }
+
+        if(node.matches('[data-visual-pair]')){
+          const item={type:'visual-pair',source:node};
           if(!tryPlaceEditorial(current,item))pending.push(item);
           continue;
         }
