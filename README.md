@@ -20,7 +20,8 @@
 2. [1978—1995人物联合时间轴 V0.1](book/timeline-1978-1995.md)
 3. [叙事规则 V0.1](book/narrative-rules.md)
 4. [当前全书结构 V0.2](book/outline.md)
-5. [七个未锁定问题](book/open-questions.md)
+5. [世界与人物现实基线 V0.2](book/world-baseline.md)
+6. [七个基础问题决议 / 后续考据清单](book/open-questions.md)
 
 旧版五部30章结构已归档：
 [outline-v0.1-topic-structure.md](book/archive/outline-v0.1-topic-structure.md)
@@ -45,7 +46,9 @@
 - 五条核心因果链：已建立。
 - 七个硬节点：已建立。
 - 正式章节目录：**尚未拆分，故意保持开放。**
-- 当前工作：解决七个未锁定问题，优先为 H市、小梅美国路径、建军/王东商业路径。
+- 七个基础问题：**故事层全部解决并锁定**。
+- 城市：**江城**（1978—1995武汉为主要现实原型）。
+- 当前工作：对已锁剧情做场景级史实核验，并开始形成正式章节与视角接力方案。
 
 ## 旧第一章
 
