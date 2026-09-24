@@ -60,6 +60,7 @@
 - [叙事段落 V0.1](narrative-sequences-v0.1.md)
 - [人物可见性与情绪曲线矩阵 V0.1](visibility-emotion-matrix-v0.1.md)
 - [章节结构 V0.2](chapter-structure-v0.2.md)
+- [1978—1995时代生活素材回收表 V0.1](era-life-recovery-v0.1.md)
 
 ## 当前已锁世界基础
 
