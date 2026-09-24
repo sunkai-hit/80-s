@@ -115,7 +115,8 @@ body{
 .cont-page .body{padding-top:0}
 .cont-page .copy{font-size:17.35px;line-height:1.85}
 
-/* 4. The note enters the text flow only at the point where it should start. */
+/* 4. Note is anchored to the bottom-right. Text remains full-width above it,
+   and wraps left only within the note's actual vertical zone. */
 .note-page .body{
   position:absolute;
   left:76px;right:76px;
@@ -127,10 +128,19 @@ body{
   height:100%;
   position:relative
 }
-.note-wrap{
+.note-shape{
   float:right;
   width:205px;
-  margin:8px 0 10px 34px;
+  height:100%;
+  margin-left:34px;
+  shape-outside:inset(595px 0 0 0);
+  pointer-events:none
+}
+.note-wrap{
+  position:absolute;
+  right:0;
+  bottom:0;
+  width:205px
 }
 .side-note{
   padding-top:12px;
@@ -282,6 +292,8 @@ body{
   <div class="page-head"><span>星期六早上七点</span><span>第一章</span></div>
   <div class="body">
     <div class="note-flow copy">
+      <span class="note-shape" aria-hidden="true"></span>
+
       <p>逢年过节发什么东西，谁家孩子招工，谁准备结婚，谁在排队等房子，很多事情都和这一个组织发生联系。</p>
       <p>父亲这一辈子有很大一部分，被装在“单位”两个字里面。</p>
       <p>所以当他说“有个好单位比什么都强”时，他想的并不仅仅是每个月那几十块钱工资。</p>
@@ -290,17 +302,6 @@ body{
       <p>上午十点多，你出门去书店。走到百货商店附近，有人在后面按了两下车铃。</p>
       <p class="short">“哎！”</p>
       <p>你回头，看见建军。你差一点没认出来。</p>
-
-      <aside class="note-wrap">
-        <div class="side-note">
-          <div class="label">时代旁注</div>
-          <h3>“单位”</h3>
-          <p>它不只是今天意义上的“公司”。在许多大型国企和事业单位里，工作还会连接住房、医疗、食堂、托幼、福利与退休。</p>
-          <p>因此父亲珍惜的“稳定”，实际是一整套可预期的生活。</p>
-          <div class="source">旁注从这里才进入正文流；其上方正文保持完整通栏。</div>
-        </div>
-      </aside>
-
       <p>他骑着一辆很新的自行车，车漆亮得刺眼，后座上还捆着一个鼓鼓囊囊的旅行包。更显眼的是他的衣服。你记得上一次见他，他还穿一件洗得有点发白的蓝夹克，现在身上换成了一件深色外套，式样你在本地商店里很少见。</p>
       <p class="short">“新车？”你摸了摸车把。</p>
       <p class="short">“嗯。”</p>
@@ -310,6 +311,18 @@ body{
       <p>建军笑起来：“大学生怎么这么俗，一见面就问钱。”</p>
       <p>你也笑：“你现在不就是专门挣钱的吗？”</p>
       <p>这句话要是放在一年前，建军大概会不高兴。</p>
+      <p>高中毕业以后，他连续两次高考都没考好，在家待了很长一段时间。那时候最怕的就是碰见亲戚，因为所有人的第一句话都是：“工作安排了吗？”</p>
+      <p class="short">“还没有。”</p>
+
+      <aside class="note-wrap">
+        <div class="side-note">
+          <div class="label">时代旁注</div>
+          <h3>“单位”</h3>
+          <p>它不只是今天意义上的“公司”。在许多大型国企和事业单位里，工作还会连接住房、医疗、食堂、托幼、福利与退休。</p>
+          <p>因此父亲珍惜的“稳定”，实际是一整套可预期的生活。</p>
+          <div class="source">旁注贴底；正文只在与旁注实际重叠的下部区域收窄。</div>
+        </div>
+      </aside>
     </div>
   </div>
   <div class="page-foot"><span>连续正文 + 右下时代旁注</span><b>04</b></div>
