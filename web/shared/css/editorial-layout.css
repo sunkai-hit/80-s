@@ -107,7 +107,7 @@
 .inline-visual{
   float:right;
   width:var(--book-inline-visual-width);
-  margin:48px 0 18px 28px;
+  margin:28px 0 16px 28px;
 }
 .inline-visual img{
   display:block;
@@ -116,7 +116,7 @@
   object-fit:cover;
 }
 .inline-visual.generated img{
-  height:310px;
+  height:260px;
   object-fit:contain;
   background:#eee7dc;
 }

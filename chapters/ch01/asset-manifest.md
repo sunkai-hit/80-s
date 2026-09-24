@@ -14,7 +14,7 @@
 | H03 | 第三节 · 约会与公共空间 | 自行车生活 | 历史照片 | assets/ch01/historical/bicyclists-1987.jpg | 🟢 |
 | H04 | 第四节 · 宿舍听歌 | 录音机实物 | 历史实物照片 | assets/ch01/historical/cassette-recorder.jpg | 🟢 |
 | H05 | 第四节 · 美国来信 | 航空信封 | 原始史料 / 实物 | assets/ch01/historical/airmail-envelope-1978.jpg | 🟢 |
-| G04 | 第六节 · 四种人生 | 夜读书桌 | image2 场景复原 | assets/ch01/generated/four-paths-1985-v4.avif | 🟢 |
+| G04 | 第六节 · 四种人生 | 夜读书桌 | image2 场景复原 | assets/ch01/generated/four-paths-1985-v5.webp | 🟢 |
 
 ## V5 使用方式变化
 
@@ -30,7 +30,7 @@
 - `distribution-1985.avif`：编辑复原，不是档案原件。
 - `unit-life-radius.avif`：解释性复原，不代表所有单位配置完全相同。
 - `wanyuan-1985.avif`：比较收入尺度，不做今天购买力换算。
-- `four-paths-1985-v4.avif`：场景复原，不是历史现场照片；无“你还没有选。”与四个路径标签。
+- `four-paths-1985-v5.webp`：场景复原，不是历史现场照片；无“你还没有选。”与四个路径标签。
 - 1988北京照片仅作为近年代城市生活背景，不声称是1985故事现场。
 - 航空信封不冒充故事中的那封美国来信。
 
@@ -38,3 +38,7 @@
 - `assets/ch01/historical/README.md`
 - `sources/copyright.md`
 为准。
+
+
+## V5.2
+- “四种人生”正式视觉切换为 `assets/ch01/generated/four-paths-1985-v5.webp`，用于解决旧 AVIF 在浏览器中未正常显示的问题。

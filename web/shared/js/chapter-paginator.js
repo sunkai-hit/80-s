@@ -5,36 +5,45 @@
     const out=[]; let buf='';
     for(const ch of text){
       buf+=ch;
-      if('。！？；'.includes(ch)){ out.push(buf); buf=''; }
+      if('。！？；'.includes(ch)){out.push(buf);buf='';}
     }
-    if(buf) out.push(buf);
+    if(buf)out.push(buf);
     return out.length?out:[text];
   }
 
   function flowOf(page){return q('.page-flow',page)}
   function bodyOf(page){return q('.layout-body',page)}
+  function hasEditorial(page){return !!q('figure.inline-visual,.margin-note',page)}
 
   function contentNodes(page){
-    return [...flowOf(page).children].filter(el=>
+    const flow=flowOf(page);
+    if(!flow)return [];
+    return [...flow.children].filter(el=>
       !el.classList.contains('margin-note-shape') &&
       (el.matches('p')||el.matches('figure.inline-visual'))
     );
   }
 
-  function pageOverflow(page){
+  function pageMetrics(page){
     const body=bodyOf(page);
     const br=body.getBoundingClientRect();
-    for(const el of contentNodes(page)){
-      if(el.getBoundingClientRect().bottom>br.bottom+1) return true;
+    const nodes=contentNodes(page);
+    let bottom=br.top;
+    let overflow=false;
+    for(const el of nodes){
+      const r=el.getBoundingClientRect();
+      bottom=Math.max(bottom,r.bottom);
+      if(r.bottom>br.bottom+1)overflow=true;
     }
     const note=q('.margin-note',page);
-    if(note && note.getBoundingClientRect().top<br.top-1) return true;
-    return false;
+    if(note && note.getBoundingClientRect().top<br.top-1)overflow=true;
+    return {overflow,gap:Math.max(0,br.bottom-bottom),nodes};
   }
 
   function createPage(track,sceneTitle,{sceneStart=false}={}){
     const page=document.createElement('section');
     page.className='book-page'+(sceneStart?' scene-opener':' continuation-page');
+    page.dataset.scene=sceneTitle;
     page.innerHTML=
       '<div class="page-head"><span class="scene-running"></span><span>第一章</span></div>'+
       '<div class="layout-body">'+
@@ -42,12 +51,11 @@
         '<div class="page-flow prose-standard"></div>'+
       '</div>'+
       '<div class="page-foot"><span>没有剧透的中国</span><b></b></div>';
-
     q('.scene-running',page).textContent=sceneStart?'没有剧透的中国':sceneTitle;
     if(sceneStart){
       const title=q('.scene-title',page);
       title.textContent=sceneTitle;
-      if(sceneTitle.length>15) title.classList.add('long');
+      if(sceneTitle.length>15)title.classList.add('long');
     }
     track.appendChild(page);
     return page;
@@ -63,7 +71,6 @@
     removeNote(page);
     const body=bodyOf(page);
     const flow=flowOf(page);
-
     const shape=document.createElement('span');
     shape.className='margin-note-shape';
     shape.setAttribute('aria-hidden','true');
@@ -77,70 +84,16 @@
       '<div class="note-copy">'+source.innerHTML+'</div>';
     body.appendChild(note);
     page.classList.add('has-note');
-
-    if(window.BookEditorialLayout) window.BookEditorialLayout.syncMarginNote(page);
+    page._editorialSource={type:'note',source};
+    if(window.BookEditorialLayout)window.BookEditorialLayout.syncMarginNote(page);
   }
 
-  function normalizeParagraph(source){
-    const p=source.cloneNode(true);
-    p.removeAttribute('data-source');
-    return p;
-  }
-
-  function appendParagraph(page,source,newContinuation){
-    const flow=flowOf(page);
-    const p=normalizeParagraph(source);
-    flow.appendChild(p);
-    if(window.BookEditorialLayout && page.classList.contains('has-note')){
-      window.BookEditorialLayout.syncMarginNote(page);
-    }
-    if(!pageOverflow(page)) return page;
-
-    p.remove();
-
-    // Marked-up/short paragraphs move whole; normal long paragraphs may split at sentence boundaries.
-    if(source.children.length || source.classList.contains('keep-together') || source.textContent.length<34){
-      const next=newContinuation();
-      flowOf(next).appendChild(p);
-      return next;
-    }
-
-    const parts=splitSentences(source.textContent);
-    if(parts.length<2){
-      const next=newContinuation();
-      flowOf(next).appendChild(p);
-      return next;
-    }
-
-    const partial=document.createElement('p');
-    partial.className=source.className;
-    flow.appendChild(partial);
-    let used=0;
-    for(let i=0;i<parts.length;i++){
-      partial.textContent+=parts[i];
-      if(pageOverflow(page)){
-        partial.textContent=partial.textContent.slice(0,-parts[i].length);
-        break;
-      }
-      used=i+1;
-    }
-
-    if(used===0){
-      partial.remove();
-      const next=newContinuation();
-      flowOf(next).appendChild(p);
-      return next;
-    }
-
-    const rest=parts.slice(used).join('');
-    if(!rest) return page;
-
-    const next=newContinuation();
-    const rem=document.createElement('p');
-    rem.className=(source.className+' split-continuation').trim();
-    rem.textContent=rest;
-    flowOf(next).appendChild(rem);
-    return next;
+  function removeEditorial(page){
+    const info=page._editorialSource||null;
+    q('figure.inline-visual',page)?.remove();
+    removeNote(page);
+    page._editorialSource=null;
+    return info;
   }
 
   function makeVisual(source){
@@ -151,57 +104,37 @@
     return fig;
   }
 
-  function appendVisual(page,source,newContinuation){
-    // Keep note and visual wrap systems separate, but never create an image-only page intentionally.
-    if(q('.margin-note',page)) page=newContinuation();
-
-    let fig=makeVisual(source);
+  function installVisual(page,source){
+    const fig=makeVisual(source);
     flowOf(page).appendChild(fig);
-
-    if(pageOverflow(page)){
-      fig.remove();
-      page=newContinuation();
-      fig=makeVisual(source);
-      flowOf(page).appendChild(fig);
-    }
-    return page;
+    page._editorialSource={type:'visual',source};
+    return fig;
   }
 
-  function moveContextToNewPage(fromPage,toPage,count){
-    const candidates=[...flowOf(fromPage).children]
-      .filter(el=>el.matches('p') && !el.classList.contains('split-continuation'));
-    const moved=candidates.slice(-count);
-    for(const el of moved) flowOf(toPage).appendChild(el);
-    return moved.length;
+  function tryPlaceEditorial(page,item){
+    if(!item||hasEditorial(page))return false;
+    if(item.type==='visual'){
+      const fig=installVisual(page,item.source);
+      if(pageMetrics(page).overflow){
+        fig.remove();
+        page._editorialSource=null;
+        return false;
+      }
+      return true;
+    }
+    installNote(page,item.source);
+    if(pageMetrics(page).overflow){
+      removeNote(page);
+      page._editorialSource=null;
+      return false;
+    }
+    return true;
   }
 
-  function attachNote(page,source,newContinuation){
-    // A page with a visual gets a clean note page, carrying nearby prose with it.
-    if(q('figure.inline-visual',page)){
-      const next=newContinuation();
-      moveContextToNewPage(page,next,Number(source.dataset.context||2));
-      page=next;
-    }
-
-    installNote(page,source);
-    if(!pageOverflow(page)) return page;
-
-    removeNote(page);
-
-    const next=newContinuation();
-    const wanted=Math.max(1,Number(source.dataset.context||2));
-    moveContextToNewPage(page,next,wanted);
-    installNote(next,source);
-
-    // If context + note is still too tall, trim context back to one paragraph.
-    while(pageOverflow(next)){
-      const paras=[...flowOf(next).children].filter(el=>el.matches('p'));
-      if(paras.length<=1) break;
-      const first=paras[0];
-      flowOf(page).appendChild(first);
-      if(window.BookEditorialLayout) window.BookEditorialLayout.syncMarginNote(next);
-    }
-    return next;
+  function normalizeParagraph(source){
+    const p=source.cloneNode(true);
+    p.removeAttribute('data-source');
+    return p;
   }
 
   function createCover(track,source){
@@ -220,20 +153,6 @@
     track.appendChild(page);
   }
 
-  function isEmptyPage(page){
-    if(page.classList.contains('cover-page')) return false;
-    const hasText=flowOf(page)?.querySelector('p');
-    const hasVisual=flowOf(page)?.querySelector('figure.inline-visual');
-    const hasNote=q('.margin-note',page);
-    return !hasText && !hasVisual && !hasNote;
-  }
-
-  function pruneEmptyPages(track){
-    [...track.querySelectorAll('.book-page')].forEach(page=>{
-      if(isEmptyPage(page)) page.remove();
-    });
-  }
-
   function numberPages(track){
     const pages=[...track.querySelectorAll('.book-page')];
     pages.forEach((p,i)=>{
@@ -245,35 +164,174 @@
     return pages;
   }
 
+  function isEmptyPage(page){
+    if(page.classList.contains('cover-page'))return false;
+    return contentNodes(page).length===0 && !q('.margin-note',page);
+  }
+
+  function pruneEmptyPages(track){
+    [...track.querySelectorAll('.book-page')].forEach(page=>{
+      if(isEmptyPage(page))page.remove();
+    });
+  }
+
+  function firstMovableParagraph(page){
+    return [...flowOf(page).children].find(el=>el.matches('p'));
+  }
+
+  function lastMovableParagraph(page){
+    const arr=[...flowOf(page).children].filter(el=>el.matches('p'));
+    return arr.at(-1)||null;
+  }
+
+  function rebalanceScenePages(track,sceneTitle){
+    const pages=[...track.querySelectorAll('.book-page')].filter(p=>p.dataset.scene===sceneTitle);
+    for(let pass=0;pass<4;pass++){
+      let changed=false;
+      for(let i=0;i<pages.length-1;i++){
+        const a=pages[i], b=pages[i+1];
+        if(pageMetrics(a).gap<70)continue;
+        let moved=0;
+        while(pageMetrics(a).gap>55){
+          const p=firstMovableParagraph(b);
+          if(!p)break;
+          flowOf(a).appendChild(p);
+          if(a.classList.contains('has-note')&&window.BookEditorialLayout){
+            window.BookEditorialLayout.syncMarginNote(a);
+          }
+          if(pageMetrics(a).overflow){
+            flowOf(b).insertBefore(p,firstMovableParagraph(b)||q('figure.inline-visual',b)||null);
+            break;
+          }
+          moved++; changed=true;
+          if(contentNodes(b).filter(n=>n.matches('p')).length<=1 && hasEditorial(b))break;
+        }
+        if(moved && isEmptyPage(b))b.remove();
+      }
+      if(!changed)break;
+    }
+  }
+
   async function build({sourceSelector='#chapterSource',trackSelector='#bookTrack'}={}){
     const source=q(sourceSelector);
     const track=q(trackSelector);
-    if(!source||!track) throw new Error('chapter source/track missing');
+    if(!source||!track)throw new Error('chapter source/track missing');
 
     track.innerHTML='';
     createCover(track,source);
 
     const scenes=[...source.content.querySelectorAll('.scene-source')];
+
     for(const scene of scenes){
       const sceneTitle=scene.dataset.title;
+      const pending=[];
       let current=createPage(track,sceneTitle,{sceneStart:true});
-      const newContinuation=()=>createPage(track,sceneTitle,{sceneStart:false});
+
+      const startContinuation=()=>{
+        const p=createPage(track,sceneTitle,{sceneStart:false});
+        if(pending.length && tryPlaceEditorial(p,pending[0]))pending.shift();
+        return p;
+      };
+
+      const appendParagraph=(sourceP)=>{
+        let p=normalizeParagraph(sourceP);
+        flowOf(current).appendChild(p);
+        if(current.classList.contains('has-note')&&window.BookEditorialLayout){
+          window.BookEditorialLayout.syncMarginNote(current);
+        }
+        if(!pageMetrics(current).overflow)return;
+
+        p.remove();
+
+        const parts=(!sourceP.children.length && sourceP.textContent.length>=34)
+          ? splitSentences(sourceP.textContent):[];
+
+        if(parts.length>1){
+          const partial=document.createElement('p');
+          partial.className=sourceP.className;
+          flowOf(current).appendChild(partial);
+          let used=0;
+          for(let i=0;i<parts.length;i++){
+            partial.textContent+=parts[i];
+            if(pageMetrics(current).overflow){
+              partial.textContent=partial.textContent.slice(0,-parts[i].length);
+              break;
+            }
+            used=i+1;
+          }
+          if(used===0)partial.remove();
+
+          const rest=parts.slice(used).join('');
+          if(!rest)return;
+          current=startContinuation();
+          const rem=document.createElement('p');
+          rem.className=(sourceP.className+' split-continuation').trim();
+          rem.textContent=rest;
+          flowOf(current).appendChild(rem);
+          if(pageMetrics(current).overflow){
+            const info=removeEditorial(current);
+            if(info)pending.unshift(info);
+            if(pageMetrics(current).overflow){
+              rem.remove();
+              const bare=createPage(track,sceneTitle,{sceneStart:false});
+              flowOf(bare).appendChild(rem);
+              current=bare;
+            }
+          }
+          return;
+        }
+
+        current=startContinuation();
+        flowOf(current).appendChild(p);
+        if(pageMetrics(current).overflow){
+          const info=removeEditorial(current);
+          if(info)pending.unshift(info);
+        }
+      };
 
       for(const node of [...scene.children]){
         if(node.matches('p')){
-          current=appendParagraph(current,node,newContinuation);
-        }else if(node.matches('figure[data-visual]')){
-          current=appendVisual(current,node,newContinuation);
-        }else if(node.matches('aside[data-note]')){
-          current=attachNote(current,node,newContinuation);
+          appendParagraph(node);
+          continue;
         }
-        if(window.BookEditorialLayout && current.classList.contains('has-note')){
-          window.BookEditorialLayout.syncMarginNote(current);
+
+        if(node.matches('figure[data-visual]')){
+          const item={type:'visual',source:node};
+          if(!tryPlaceEditorial(current,item))pending.push(item);
+          continue;
+        }
+
+        if(node.matches('aside[data-note]')){
+          const item={type:'note',source:node};
+          if(!tryPlaceEditorial(current,item))pending.push(item);
         }
       }
 
-      // A scene is genuinely ending here, so its final page may be underfilled.
-      current.dataset.allowUnderfill='true';
+      // Any editorial item still pending must share a page with nearby prose.
+      while(pending.length){
+        const previous=current;
+        current=createPage(track,sceneTitle,{sceneStart:false});
+        const item=pending.shift();
+        tryPlaceEditorial(current,item);
+
+        let moved=0;
+        while(moved<6){
+          const tail=lastMovableParagraph(previous);
+          if(!tail)break;
+          flowOf(current).appendChild(tail);
+          if(current.classList.contains('has-note')&&window.BookEditorialLayout){
+            window.BookEditorialLayout.syncMarginNote(current);
+          }
+          if(pageMetrics(current).overflow){
+            flowOf(previous).appendChild(tail);
+            break;
+          }
+          moved++;
+          if(pageMetrics(current).gap<180)break;
+        }
+      }
+
+      rebalanceScenePages(track,sceneTitle);
     }
 
     pruneEmptyPages(track);
