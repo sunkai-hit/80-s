@@ -1,6 +1,8 @@
 # 《没有剧透的中国》正式章节结构 V0.1（工作版）
 
-> 状态：**WORKING CHAPTER STRUCTURE / NOT LOCKED**
+> 状态：**ARCHIVED INTERMEDIATE STRUCTURE / SUPERSEDED BY V0.2**
+>
+> 该版本主要基于47个关系骨架场景形成，低估了人物独立人生。当前章节基线已迁移至 `book/chapter-structure-v0.2.md`。
 >
 > 来源：
 > - 36个硬节点完整场景；
