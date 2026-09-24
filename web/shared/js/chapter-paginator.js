@@ -112,6 +112,9 @@
   }
 
   function appendVisual(page,source,newContinuation){
+    // Notes and inline visuals use different wrap systems; keep them on separate pages.
+    if(q('.margin-note',page)) page=newContinuation();
+
     // Avoid dropping a large visual into the last sliver of a page.
     const body=q('.layout-body',page);
     const used=body.scrollHeight/body.clientHeight;
@@ -129,7 +132,7 @@
   }
 
   function attachNote(page,source,newContinuation){
-    if(q('.margin-note',page)) page=newContinuation();
+    if(q('.margin-note',page) || q('.inline-visual',page)) page=newContinuation();
     if(contentAmount(page)>.80) page=newContinuation();
 
     const flow=flowOf(page);
@@ -169,7 +172,7 @@
         '<h1>'+source.dataset.title+'</h1>'+
         '<div class="cover-year">'+(source.dataset.year||'1985')+'</div>'+
         '<div class="cover-sub">'+source.dataset.subtitle+'</div>'+
-        '<div class="cover-deck">'+source.dataset.deck.replace(/\n/g,'<br>')+'</div>'+
+        '<div class="cover-deck">'+source.dataset.deck.replace(/\\n/g,'<br>')+'</div>'+
       '</div>'+
       '<div class="page-foot"><span>没有剧透的中国</span><b></b></div>';
     track.appendChild(page);
