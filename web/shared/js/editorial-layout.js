@@ -149,11 +149,25 @@
     return issues;
   }
 
+  function preflightLayout(root=document){
+    const issues=auditLayout(root);
+    const fatalTypes=new Set([
+      'empty','overflow','visual-only','title-only',
+      'note-text-overlap','visual-empty-zone'
+    ]);
+    const fatal=issues.filter(i=>fatalTypes.has(i.type));
+    if(fatal.length){
+      console.error('[book-layout] PRE-PUBLISH VISUAL QA FAILED',fatal);
+    }
+    return {ok:fatal.length===0,issues,fatal};
+  }
+
   window.BookEditorialLayout={
     syncMarginNote,
     syncMarginNotes,
     layoutMetrics,
-    auditLayout
+    auditLayout,
+    preflightLayout
   };
 
   window.addEventListener('resize',()=>syncMarginNotes());
