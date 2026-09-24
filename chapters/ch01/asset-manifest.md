@@ -16,7 +16,7 @@
 | H03 | P17 | 公共空间与自行车 | 历史照片 | assets/ch01/historical/bicyclists-1987.jpg | 🟢 |
 | H04 | P20 | 录音机实物 | 历史实物照片 | assets/ch01/historical/cassette-recorder.jpg | 🟢 |
 | H05 | P25 | 航空信封 | 原始史料/实物 | assets/ch01/historical/airmail-envelope-1978.jpg | 🟢 |
-| G04 | P29 | 四种人生 | image2 场景复原 | assets/ch01/generated/four-paths-1985.avif | 🟢 |
+| G04 | P29 | 四种人生 | image2 场景复原 | assets/ch01/generated/four-paths-1985-v4.avif | 🟢 |
 
 ## 2. 当前工程检查
 
@@ -61,3 +61,9 @@
 **WORKFLOW.md**
 
 正式 HTML 使用的每一张图片，都必须先进入对应章节的 historical / generated 本地目录，再进入页面。
+
+
+## V4.0 视觉更新
+- 四种人生场景改用 `assets/ch01/generated/four-paths-1985-v4.avif`；
+- 新图已去掉“你还没有选。”及“单位稳定 / 市场风险 / 学习改变 / 远方世界”等四个标签；
+- 旧 `four-paths-1985.avif` 保留为历史版本，不再被正式HTML引用。
