@@ -62,6 +62,7 @@
 - `book/timeline-1978-1995.md`
 - `book/narrative-rules.md`
 - `book/open-questions.md`
+- `book/world-baseline.md`
 - `book/outline.md`
 
 旧“五部30章”结构已归档，不再作为写作依据。
