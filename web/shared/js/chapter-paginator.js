@@ -13,14 +13,14 @@
 
   function flowOf(page){return q('.page-flow',page)}
   function bodyOf(page){return q('.layout-body',page)}
-  function hasEditorial(page){return !!q('figure.inline-visual,.inline-visual-pair,.margin-note',page)}
+  function hasEditorial(page){return !!q('figure.inline-visual,.inline-visual-rail,.margin-note',page)}
 
   function contentNodes(page){
     const flow=flowOf(page);
     if(!flow)return [];
     return [...flow.children].filter(el=>
       !el.classList.contains('margin-note-shape') &&
-      (el.matches('p')||el.matches('figure.inline-visual')||el.matches('.inline-visual-pair'))
+      (el.matches('p')||el.matches('figure.inline-visual')||el.matches('.inline-visual-rail'))
     );
   }
 
@@ -91,7 +91,7 @@
   function removeEditorial(page){
     const info=page._editorialSource||null;
     q('figure.inline-visual',page)?.remove();
-    q('.inline-visual-pair',page)?.remove();
+    q('.inline-visual-rail',page)?.remove();
     removeNote(page);
     page._editorialSource=null;
     return info;
@@ -112,22 +112,24 @@
     return fig;
   }
 
-  function makeVisualPair(source){
-    const pair=source.cloneNode(true);
-    pair.removeAttribute('data-visual-pair');
-    pair.className='inline-visual-pair';
-    pair.querySelectorAll('figure').forEach(fig=>{
+  function makeVisualRail(source){
+    const rail=source.cloneNode(true);
+    rail.removeAttribute('data-visual-rail');
+    rail.className='inline-visual-rail';
+    const figures=[...rail.querySelectorAll('figure')];
+    rail.dataset.count=String(figures.length);
+    figures.forEach(fig=>{
       fig.removeAttribute('data-visual');
       fig.className='';
     });
-    return pair;
+    return rail;
   }
 
-  function installVisualPair(page,source){
-    const pair=makeVisualPair(source);
-    flowOf(page).appendChild(pair);
-    page._editorialSource={type:'visual-pair',source};
-    return pair;
+  function installVisualRail(page,source){
+    const rail=makeVisualRail(source);
+    flowOf(page).appendChild(rail);
+    page._editorialSource={type:'visual-rail',source};
+    return rail;
   }
 
   function tryPlaceEditorial(page,item){
@@ -141,10 +143,10 @@
       }
       return true;
     }
-    if(item.type==='visual-pair'){
-      const pair=installVisualPair(page,item.source);
+    if(item.type==='visual-rail'){
+      const rail=installVisualRail(page,item.source);
       if(pageMetrics(page).overflow){
-        pair.remove();
+        rail.remove();
         page._editorialSource=null;
         return false;
       }
@@ -329,8 +331,12 @@
           continue;
         }
 
-        if(node.matches('[data-visual-pair]')){
-          const item={type:'visual-pair',source:node};
+        if(node.matches('[data-visual-rail]')){
+          const count=node.querySelectorAll('figure').length;
+          if(count<2 || count>3){
+            console.warn('[book-layout] visual rail expects 2–3 figures', {count});
+          }
+          const item={type:'visual-rail',source:node};
           if(!tryPlaceEditorial(current,item))pending.push(item);
           continue;
         }

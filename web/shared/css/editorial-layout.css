@@ -118,7 +118,7 @@
 .inline-visual.generated img{
   height:260px;
   object-fit:contain;
-  background:#eee7dc;
+  background:transparent;
 }
 .inline-visual.small{width:38%}
 .inline-visual.small img{height:250px}
@@ -146,28 +146,34 @@
 }
 
 
-/* Two related visuals on one page: use a planned pair, never two competing floats. */
-.inline-visual-pair{
-  width:100%;
-  clear:both;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-  margin:22px 0 16px;
+/* Multiple related visuals share the same right-side reading grammar as a single image.
+ * 2–3 images stack vertically in one right rail; 4+ must be split across pages.
+ */
+.inline-visual-rail{
+  float:right;
+  width:43%;
+  clear:right;
+  margin:28px 0 16px 28px;
   break-inside:avoid;
 }
-.inline-visual-pair figure{margin:0;min-width:0}
-.inline-visual-pair img{
+.inline-visual-rail figure{
+  margin:0 0 16px;
+  min-width:0;
+}
+.inline-visual-rail figure:last-child{margin-bottom:0}
+.inline-visual-rail img{
   display:block;
   width:100%;
-  height:220px;
+  height:auto;
+  max-height:205px;
   object-fit:contain;
-  background:#eee7dc;
+  background:transparent;
 }
-.inline-visual-pair figcaption{
-  margin-top:7px;
+.inline-visual-rail[data-count="3"] img{max-height:132px}
+.inline-visual-rail figcaption{
+  margin-top:6px;
   font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
-  font-size:9.2px;
+  font-size:9.1px;
   line-height:1.5;
   color:#80746b;
 }
