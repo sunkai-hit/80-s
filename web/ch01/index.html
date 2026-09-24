@@ -57,6 +57,17 @@
     <p>父亲说的“分配”，在你听来再普通不过。1985年，高校毕业生分配制度已经开始改革；但对你这样的普通大学生来说，就业仍然强烈地嵌在国家计划、学校推荐和单位接收的体系里。今天熟悉的招聘网站、简历海投、秋招春招，还不是你理解毕业去向的主要方式。</p>
     <p>所以你真正会担心的，通常不是“毕业后有没有工作”，而是：会去哪个城市、哪个行业、哪个单位。</p>
 
+    <div data-visual-rail>
+      <figure>
+        <img src="../../assets/ch01/generated/distribution-1985.webp" alt="1985年高校毕业分配制度编辑复原图">
+        <figcaption>编辑复原图｜1985年前后高校毕业分配制度的叙事性视觉复原，并非真实档案原件。</figcaption>
+      </figure>
+      <figure>
+        <img src="../../assets/ch01/generated/unit-life-radius.webp" alt="1980年代单位生活半径编辑复原图">
+        <figcaption>编辑复原图｜大型国企和事业单位常见的“单位办社会”生活逻辑，不代表所有单位条件完全相同。</figcaption>
+      </figure>
+    </div>
+
     <aside data-note data-context="2" data-label="时代旁注" data-title="什么叫“包分配”？">
       <p>“包分配”是后来人对旧有高校毕业生就业体制的通俗概括。到1985年，这套制度已经开始改革：国家计划内学生逐步转向“本人选报志愿、学校推荐、用人单位择优录用”。</p>
       <p>但改革并不是一夜完成的。对很多家庭来说，“考上大学以后工作基本有着落”仍然是现实预期。稳定很强，个人选择也在增加。</p>
@@ -148,6 +159,11 @@
     <p>“今天让你卖，明天呢？谁知道。货会不会压手里，钱能不能回来，也没人管你。你以为我不怕？”</p>
     <p>这句话让你有点意外。</p>
     <p>从他那辆新自行车和那件漂亮夹克上，你看到的是一个突然发了财的老同学。可他自己看到的，是一种你父亲绝不会接受的生活：这个月可能挣很多，下个月也许一分钱没有。</p>
+
+    <figure data-visual data-kind="generated" data-class="small">
+      <img src="../../assets/ch01/generated/wanyuan-1985.webp" alt="1985年万元户收入尺度编辑视觉">
+      <figcaption>编辑视觉｜1985年全国职工平均年工资约1148元，一万元约为8.7年平均工资。这里只比较收入尺度，不作今天购买力换算。</figcaption>
+    </figure>
     <p class="short">“那你还干？”</p>
     <p class="short">“有钱挣为什么不干？”</p>
     <p>他说完停了一下，又问你：“你毕业一个月能挣多少？”</p>
@@ -447,10 +463,13 @@
 <script>
 (async()=>{
   if(document.fonts&&document.fonts.ready) await document.fonts.ready;
+  const qaMode=new URLSearchParams(location.search).has('qa');
+  if(qaMode)document.documentElement.classList.add('qa-layout');
+
   await BookChapterPaginator.build({sourceSelector:'#chapterSource',trackSelector:'#bookTrack'});
   BookReader.init();
 
-  if(new URLSearchParams(location.search).has('qa') && window.BookEditorialLayout){
+  if(qaMode && window.BookEditorialLayout){
     const issues=BookEditorialLayout.auditLayout(document.getElementById('bookTrack'));
     const node=document.createElement('script');
     node.id='layoutQaData';

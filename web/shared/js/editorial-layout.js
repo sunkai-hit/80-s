@@ -27,28 +27,30 @@
     if(!flow) return [];
     return [...flow.children].filter(el=>
       !el.classList.contains('margin-note-shape') &&
-      (el.matches('p')||el.matches('figure.inline-visual'))
+      (el.matches('p')||el.matches('figure.inline-visual')||el.matches('.inline-visual-rail'))
     );
   }
 
   function layoutMetrics(page){
     const body=page.querySelector('.layout-body');
     if(!body) return {overflow:false,empty:true,gap:0};
-    const br=body.getBoundingClientRect();
+    const flow=page.querySelector('.page-flow');
     const nodes=contentNodes(page);
-    let maxBottom=br.top;
+    const bodyH=body.clientHeight;
+    const flowTop=flow?flow.offsetTop:0;
+    let maxBottom=0;
     let overflow=false;
     for(const el of nodes){
-      const r=el.getBoundingClientRect();
-      maxBottom=Math.max(maxBottom,r.bottom);
-      if(r.bottom>br.bottom+1) overflow=true;
+      const bottom=flowTop+el.offsetTop+el.offsetHeight;
+      maxBottom=Math.max(maxBottom,bottom);
+      if(bottom>bodyH+1) overflow=true;
     }
     const note=page.querySelector('.margin-note');
-    if(note && note.getBoundingClientRect().top<br.top-1) overflow=true;
+    if(note && note.offsetTop<0) overflow=true;
     return {
       overflow,
       empty:nodes.length===0,
-      gap:Math.max(0,br.bottom-maxBottom),
+      gap:Math.max(0,bodyH-maxBottom),
       nodeCount:nodes.length
     };
   }
@@ -56,6 +58,13 @@
   function auditLayout(root=document){
     const issues=[];
     root.querySelectorAll('.book-page:not(.cover-page)').forEach((page,index)=>{
+      const oldTransform=page.style.transform;
+      const oldTransition=page.style.transition;
+      const oldOpacity=page.style.opacity;
+      page.style.transition='none';
+      page.style.transform='none';
+      page.style.opacity='1';
+
       const m=layoutMetrics(page);
       if(m.empty) issues.push({page:index+1,type:'empty'});
       if(m.overflow) issues.push({page:index+1,type:'overflow'});
@@ -112,6 +121,10 @@
       if(page.classList.contains('scene-opener') && pCount===0){
         issues.push({page:index+1,type:'title-only'});
       }
+
+      page.style.transform=oldTransform;
+      page.style.transition=oldTransition;
+      page.style.opacity=oldOpacity;
     });
     if(issues.length) console.warn('[book-layout] review issues',issues);
     return issues;

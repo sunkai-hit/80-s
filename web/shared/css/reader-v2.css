@@ -59,7 +59,7 @@ body{
   font-size:27px;line-height:1.55;font-weight:700;color:var(--accent);margin-top:22px
 }
 .inline-visual{break-inside:avoid}
-.inline-visual.generated img{object-fit:contain;background:#eee7dc}
+.inline-visual.generated img{object-fit:cover;background:transparent}
 .inline-visual.historical img{object-fit:cover;filter:saturate(.92) contrast(.98)}
 .inline-visual.left{float:left;margin-left:0;margin-right:28px}
 .inline-visual.small{width:38%}
@@ -117,3 +117,6 @@ body.ready .loading{display:none}
   border:1px dashed #b66d5d;color:#8f3f32;font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
   font-size:13px;line-height:1.7;text-align:center;padding:24px
 }
+
+/* Release QA: render the selected hash page without slide-animation timing noise. */
+.qa-layout .book-page{transition:none!important}
