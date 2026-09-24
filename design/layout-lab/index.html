@@ -6,17 +6,17 @@
 <title>排版样张｜没有剧透的中国</title>
 <style>
 :root{
-  --canvas:#d5cec3;
   --paper:#fbf8f1;
   --ink:#292522;
-  --muted:#81776e;
   --accent:#8f3f32;
   --line:#ddd3c6;
   --pw:820px;
   --ph:1080px;
   --scale:.76;
-  --body:17.2px;
+  --body:17.3px;
   --leading:1.84;
+  --content-top:94px;
+  --content-bottom:76px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden}
@@ -30,7 +30,7 @@ body{
   display:flex;align-items:center;justify-content:space-between;
   padding:0 28px;color:#5f564f;
   font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
-  font-size:12px;letter-spacing:.04em;
+  font-size:12px;letter-spacing:.04em
 }
 .topbar b{color:#392f29;font-weight:600}
 .stage{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0}
@@ -60,35 +60,122 @@ body{
   font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
   font-size:10.5px;letter-spacing:.06em
 }
-.body{position:absolute;left:76px;right:76px;top:92px;bottom:58px;overflow:hidden}
-.copy{font-size:var(--body);line-height:var(--leading);letter-spacing:.01em}
-.copy p{margin:0 0 12px}.copy p.short{margin-bottom:6px}
-.title-page .body{display:flex;flex-direction:column;justify-content:flex-start;padding-top:165px}
-.book-kicker{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:12px;color:var(--accent);letter-spacing:.18em;margin-bottom:28px}
-.title-page h1{margin:0;white-space:nowrap;font-size:48px;line-height:1.2;letter-spacing:-.01em;font-weight:700}
-.title-page .year{margin-top:16px;font-family:Georgia,"Times New Roman",serif;font-size:82px;line-height:1;color:rgba(143,63,50,.13)}
+/* All prose pages share the same first-line and last-line box. */
+.body{
+  position:absolute;
+  left:76px;right:76px;
+  top:var(--content-top);
+  bottom:var(--content-bottom);
+  overflow:hidden
+}
+.copy{
+  font-size:var(--body);
+  line-height:var(--leading);
+  letter-spacing:.01em
+}
+.copy p{margin:0 0 11px}
+.copy p.short{margin-bottom:5px}
+
+/* 1. Title page is intentionally exceptional. */
+.title-page .body{
+  display:flex;flex-direction:column;justify-content:flex-start;
+  padding-top:165px
+}
+.book-kicker{
+  font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:12px;color:var(--accent);letter-spacing:.18em;margin-bottom:28px
+}
+.title-page h1{
+  margin:0;white-space:nowrap;
+  font-size:48px;line-height:1.2;letter-spacing:-.01em;font-weight:700
+}
+.title-page .year{
+  margin-top:16px;font-family:Georgia,"Times New Roman",serif;
+  font-size:82px;line-height:1;color:rgba(143,63,50,.13)
+}
 .title-page .sub{margin-top:18px;font-size:20px;color:#625850}
-.title-page .deck{margin-top:auto;margin-bottom:66px;max-width:31em;padding-left:18px;border-left:2px solid #b58a7f;font-size:18px;line-height:1.9;color:#544a43}
-.scene-page .body{padding-top:92px}
-.scene-no{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:10px;letter-spacing:.16em;color:#a08f82;margin-bottom:16px}
-.scene-page h2{margin:0 0 32px;font-size:33px;line-height:1.25;font-weight:700}
-.cont-page .body{padding-top:42px}.cont-page .copy{font-size:17.4px;line-height:1.88}
-.note-page .body{display:grid;grid-template-columns:minmax(0,1fr) 205px;gap:34px;padding-top:34px}
-.side-note{margin-top:66px;padding-left:16px;border-left:1.5px solid #bca797;color:#5d534b}
-.side-note .label{font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:9.5px;letter-spacing:.15em;color:#9b6a5b;margin-bottom:12px}
-.side-note h3{margin:0 0 10px;font-size:17px;line-height:1.45}
-.side-note p{margin:0 0 10px;font-size:12.5px;line-height:1.72}
-.side-note .source{padding-top:9px;border-top:1px solid var(--line);color:#8a7d73;font-size:10px;line-height:1.6}
-.photo-page .body{padding-top:30px}
-.float-photo{float:right;width:44%;margin:56px 0 18px 28px}
-.float-photo img{display:block;width:100%;max-height:360px;object-fit:cover;filter:saturate(.9) contrast(.98)}
-.float-photo figcaption{margin-top:8px;font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:9.7px;line-height:1.55;color:#80746b}
-.photo-page .copy p{margin-bottom:11px}
-.editorial-page .body{padding-top:28px}
-.editorial-figure{float:right;width:43%;margin:64px 0 18px 28px}
-.editorial-figure img{display:block;width:100%;max-height:405px;object-fit:cover}
-.editorial-figure figcaption{margin-top:8px;font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;font-size:9.7px;line-height:1.55;color:#80746b}
-.editorial-page .copy strong{font-weight:700;color:#191613}
+.title-page .deck{
+  margin-top:auto;margin-bottom:66px;max-width:31em;
+  padding-left:18px;border-left:2px solid #b58a7f;
+  font-size:18px;line-height:1.9;color:#544a43
+}
+
+/* 2. Scene opener: title sinks; ONLY title-to-copy gap is intentionally generous. */
+.scene-page .body{padding-top:82px}
+.scene-no{
+  font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:10px;letter-spacing:.16em;color:#a08f82;margin-bottom:15px
+}
+.scene-page h2{
+  margin:0 0 48px;
+  font-size:33px;line-height:1.25;font-weight:700
+}
+
+/* 3. Continuous prose starts immediately at the common first-line. */
+.cont-page .body{padding-top:0}
+.cont-page .copy{font-size:17.35px;line-height:1.85}
+
+/* 4. Notes live at the bottom of the outer rail, never floating mid-page. */
+.note-page .body{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 205px;
+  gap:34px
+}
+.note-main{min-width:0}
+.note-rail{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end
+}
+.side-note{
+  padding-top:13px;
+  border-top:1px solid #bca797;
+  color:#5d534b
+}
+.side-note .label{
+  font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:9px;letter-spacing:.15em;color:#9b6a5b;margin-bottom:9px
+}
+.side-note h3{margin:0 0 9px;font-size:16px;line-height:1.45}
+.side-note p{margin:0 0 8px;font-size:12px;line-height:1.68}
+.side-note .source{
+  color:#8a7d73;font-size:9.7px;line-height:1.58
+}
+
+/* 5. Historical image grows inside prose, while prose still uses the full page height. */
+.photo-page .body{padding-top:0}
+.float-photo{float:right;width:43%;margin:48px 0 18px 28px}
+.float-photo img{
+  display:block;width:100%;max-height:350px;object-fit:cover;
+  filter:saturate(.9) contrast(.98)
+}
+.float-photo figcaption{
+  margin-top:8px;
+  font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:9.6px;line-height:1.55;color:#80746b
+}
+.photo-page .copy p{margin-bottom:10px}
+
+/* 6. Editorial illustration follows the same rule. */
+.editorial-page .body{padding-top:0}
+.editorial-figure{float:right;width:42%;margin:48px 0 18px 28px}
+.editorial-figure img{
+  display:block;width:100%;max-height:385px;object-fit:cover;
+  background:#eee7dc
+}
+.editorial-figure figcaption{
+  margin-top:8px;
+  font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-size:9.6px;line-height:1.55;color:#80746b
+}
+/* Keywords get a small breathing space from surrounding text. */
+.keyword{
+  font-weight:700;color:#191613;
+  margin:0 .16em;
+  letter-spacing:.015em
+}
+
 .nav{
   position:absolute;top:50%;transform:translateY(-50%);
   width:44px;height:44px;border-radius:50%;
@@ -97,7 +184,10 @@ body{
   box-shadow:0 6px 18px rgba(54,43,32,.1)
 }
 .prev{left:20px}.next{right:20px}.nav:disabled{opacity:.25;cursor:default}
-.progress{flex:1;max-width:520px;height:3px;margin:0 20px;background:rgba(85,72,60,.14);border-radius:9px;overflow:hidden}
+.progress{
+  flex:1;max-width:520px;height:3px;margin:0 20px;
+  background:rgba(85,72,60,.14);border-radius:9px;overflow:hidden
+}
 .progress i{display:block;height:100%;width:16.66%;background:var(--accent);transition:width .25s ease}
 .legend{display:flex;gap:14px;align-items:center}.legend span{white-space:nowrap}
 @media(max-width:760px){
@@ -133,118 +223,149 @@ body{
         </section>
 
         <section class="page scene-page" data-page="2">
-          <div class="page-head"><span>没有剧透的中国</span><span>第一章</span></div>
-          <div class="body">
-            <div class="scene-no">01 · SATURDAY MORNING</div>
-            <h2>星期六早上七点</h2>
-            <div class="copy">
-              <p>1985年秋天的一个星期六，你被厨房里的声音吵醒。</p>
-              <p>最先听见的是锅盖。水快烧开的时候，蒸汽把锅盖一下一下顶起来，发出很轻的“哒、哒”声。母亲在厨房里忙，父亲已经洗完脸，正蹲在门口给自行车后轮打气。</p>
-              <p>你从床上坐起来，先看见的是父亲挂在椅背上的蓝色工作服，然后才想起今天没有课。</p>
-              <p>你20岁，在本市一所大学读二年级。平时住宿舍，周末偶尔回家。所谓“家”，是父亲单位分的一套两间房。面积不大，却已经比你小时候宽敞不少。</p>
-              <p>书桌上压着一本杂志，下面藏着小梅前几天写给你的信。你昨晚回来后读了两遍，睡觉前特意把它塞进大学英语课本里。</p>
-              <p class="short">今天早上睁开眼，你第一件事竟然是看看那本书有没有被人动过。</p>
-              <p class="short">还好，在原处。</p>
-            </div>
-          </div>
-          <div class="page-foot"><span>场景起始页 · 标题下沉</span><b>02</b></div>
-        </section>
+  <div class="page-head"><span>没有剧透的中国</span><span>第一章</span></div>
+  <div class="body">
+    <div class="scene-no">01 · SATURDAY MORNING</div>
+    <h2>星期六早上七点</h2>
+    <div class="copy">
+      <p>1985年秋天的一个星期六，你被厨房里的声音吵醒。</p>
+      <p>最先听见的是锅盖。水快烧开的时候，蒸汽把锅盖一下一下顶起来，发出很轻的“哒、哒”声。母亲在厨房里忙，父亲已经洗完脸，正蹲在门口给自行车后轮打气。</p>
+      <p>你从床上坐起来，先看见的是父亲挂在椅背上的蓝色工作服，然后才想起今天没有课。</p>
+      <p>你20岁，在本市一所大学读二年级。平时住宿舍，周末偶尔回家。所谓“家”，是父亲单位分的一套两间房。面积不大，却已经比你小时候宽敞不少。你和妹妹过去睡一间，父母睡另一间；妹妹去年去外地上学以后，那间屋子终于大部分时间归你使用，可母亲还是会进去晾衣服、放被子，父亲找东西时也从不敲门。</p>
+      <p>因此它还不能算真正属于你。</p>
+      <p>书桌上压着一本杂志，下面藏着小梅前几天写给你的信。你昨晚回来后读了两遍，睡觉前特意把它塞进大学英语课本里。</p>
+      <p>今天早上睁开眼，你第一件事竟然是看看那本书有没有被人动过。</p>
+      <p class="short">还好，在原处。</p>
+      <p>吃早饭的时候，母亲问：“学校今天没活动？”</p>
+      <p class="short">“下午有电影。”</p>
+      <p class="short">父亲抬起头：“学校放的？”</p>
+      <p class="short">“不是。跟同学去电影院。”</p>
+    </div>
+  </div>
+  <div class="page-foot"><span>场景起始页 · 标题下方留白，正文到统一末行</span><b>02</b></div>
+</section>
 
         <section class="page cont-page" data-page="3">
-          <div class="page-head"><span>星期六早上七点</span><span>第一章</span></div>
-          <div class="body">
-            <div class="copy">
-              <p>吃早饭的时候，母亲问：“学校今天没活动？”</p>
-              <p class="short">“下午有电影。”</p>
-              <p class="short">父亲抬起头：“学校放的？”</p>
-              <p class="short">“不是。跟同学去电影院。”</p>
-              <p>母亲看了你一眼，没有追问。你低头喝粥，知道她大概已经猜到那个“同学”是谁。</p>
-              <p>父亲却完全没注意这些。他正盘算另一件事：“你毕业还有两年多吧？”</p>
-              <p class="short">“差不多。”</p>
-              <p class="short">“那时候不知道能分到哪里。能留本市最好。”</p>
-              <p class="short">你说：“还早呢。”</p>
-              <p>父亲摇摇头：“早什么？分配是大事。你们学校不错，只要别自己瞎折腾，工作总归有的。”</p>
-              <p>你没有接话。父亲说的“分配”，在你听来再普通不过。对一个1985年的普通大学生来说，毕业去向仍然强烈地嵌在国家计划、学校推荐和单位接收的体系里。</p>
-              <p>所以你真正会担心的，通常不是“毕业后有没有工作”，而是：会去哪个城市、哪个行业、哪个单位。</p>
-            </div>
-          </div>
-          <div class="page-foot"><span>连续正文页 · 无重复标题</span><b>03</b></div>
-        </section>
+  <div class="page-head"><span>星期六早上七点</span><span>第一章</span></div>
+  <div class="body">
+    <div class="copy">
+      <p>母亲看了你一眼，没有追问。你低头喝粥，知道她大概已经猜到那个“同学”是谁。</p>
+      <p>父亲却完全没注意这些。他正盘算另一件事：“你毕业还有两年多吧？”</p>
+      <p class="short">“差不多。”</p>
+      <p class="short">“那时候不知道能分到哪里。能留本市最好。”</p>
+      <p class="short">你说：“还早呢。”</p>
+      <p>父亲摇摇头：“早什么？分配是大事。你们学校不错，只要别自己瞎折腾，工作总归有的。”</p>
+      <p>你没有接话。</p>
+      <p>父亲说的“分配”，在你听来再普通不过。1985年，高校毕业生分配制度已经开始改革；但对你这样的普通大学生来说，就业仍然强烈地嵌在国家计划、学校推荐和单位接收的体系里。今天熟悉的招聘网站、简历海投、秋招春招，还不是你理解毕业去向的主要方式。</p>
+      <p>所以你真正会担心的，通常不是“毕业后有没有工作”，而是：会去哪个城市、哪个行业、哪个单位。</p>
+      <p>父亲吃完最后一口馒头，拎起帆布包准备出门。</p>
+      <p class="short">你问：“今天不是星期六吗？”</p>
+      <p class="short">“厂里有事。”</p>
+      <p class="short">“加班？”</p>
+      <p class="short">“过去看看。”</p>
+      <p>他说得非常自然。你忽然想起来，小时候好像从来没有听父亲说过“换工作”。他在这家厂待了很多年，再过很多年，大概也还会在那里。</p>
+      <p>你认识的不少叔叔阿姨都是这样：同一个厂、同一个医院、同一所学校，从二十几岁一直干到退休。</p>
+      <p>这和你今天理解的一份工作不太一样。</p>
+    </div>
+  </div>
+  <div class="page-foot"><span>连续正文页 · 固定首行与末行</span><b>03</b></div>
+</section>
 
         <section class="page note-page" data-page="4">
-          <div class="page-head"><span>星期六早上七点</span><span>第一章</span></div>
-          <div class="body">
-            <div class="copy">
-              <p>父亲吃完最后一口馒头，拎起帆布包准备出门。</p>
-              <p class="short">你问：“今天不是星期六吗？”</p>
-              <p class="short">“厂里有事。”</p>
-              <p class="short">“加班？”</p>
-              <p class="short">“过去看看。”</p>
-              <p>他说得非常自然。你忽然想起来，小时候好像从来没有听父亲说过“换工作”。他在这家厂待了很多年，再过很多年，大概也还会在那里。</p>
-              <p>你认识的不少叔叔阿姨都是这样：同一个厂、同一个医院、同一所学校，从二十几岁一直干到退休。</p>
-              <p>这和你今天理解的一份工作不太一样。父亲去的不是一家随时可以辞职跳槽的“公司”。他去的是他的单位。</p>
-              <p>单位给他发工资，也可能决定家里什么时候能改善住房；厂里有食堂、医务室、澡堂，小时候你甚至上过厂里的幼儿园。</p>
-              <p>父亲这一辈子有很大一部分，被装在“单位”两个字里面。</p>
-            </div>
-            <aside class="side-note">
-              <div class="label">时代旁注</div>
-              <h3>“包分配”</h3>
-              <p>1985年，高校毕业分配制度已经开始改革，但普通大学生的就业仍然主要处在计划、学校推荐与单位接收的体系里。</p>
-              <p>真正的悬念通常不是“有没有工作”，而是会去哪里、进入什么单位。</p>
-              <div class="source">旁注只解释正文读不懂的制度，不单独占一页。</div>
-            </aside>
-          </div>
-          <div class="page-foot"><span>正文 + 时代旁注</span><b>04</b></div>
-        </section>
+  <div class="page-head"><span>星期六早上七点</span><span>第一章</span></div>
+  <div class="body">
+    <div class="note-main copy">
+      <p>父亲去的不是一家随时可以辞职跳槽的“公司”。</p>
+      <p>他去的是他的单位。</p>
+      <p>单位给他发工资，也可能决定家里什么时候能改善住房；厂里有食堂、医务室、澡堂，小时候你甚至上过厂里的幼儿园。逢年过节发什么东西，谁家孩子招工，谁准备结婚，谁在排队等房子，很多事情都和这一个组织发生联系。</p>
+      <p>父亲这一辈子有很大一部分，被装在“单位”两个字里面。</p>
+      <p>所以当他说“有个好单位比什么都强”时，他想的并不仅仅是每个月那几十块钱工资。</p>
+      <p>他想的是一整套可以看见的未来。</p>
+      <p>而你还没有意识到，再过几年，这句话会越来越频繁地被年轻人质疑。</p>
+      <p>上午十点多，你出门去书店。</p>
+      <p>走到百货商店附近，有人在后面按了两下车铃。</p>
+      <p class="short">“哎！”</p>
+      <p>你回头，看见建军。你差一点没认出来。</p>
+      <p>他骑着一辆很新的自行车，车漆亮得刺眼，后座上还捆着一个鼓鼓囊囊的旅行包。更显眼的是他的衣服。你记得上一次见他，他还穿一件洗得有点发白的蓝夹克，现在身上换成了一件深色外套，式样你在本地商店里很少见。</p>
+      <p class="short">“新车？”你摸了摸车把。</p>
+      <p class="short">“嗯。”</p>
+      <p class="short">“哪来的？”</p>
+      <p class="short">“买的呗。”</p>
+    </div>
+    <div class="note-rail">
+      <aside class="side-note">
+        <div class="label">时代旁注</div>
+        <h3>“包分配”</h3>
+        <p>1985年，高校毕业分配制度已经开始改革，但普通大学生的就业仍主要处在计划、学校推荐与单位接收体系里。</p>
+        <p>真正的悬念通常不是“有没有工作”，而是会去哪里、进入什么单位。</p>
+        <div class="source">旁注固定贴底；若同页有多个旁注，则从底部向上叠放，空白留在上方。</div>
+      </aside>
+    </div>
+  </div>
+  <div class="page-foot"><span>正文 + 底部旁注</span><b>04</b></div>
+</section>
 
         <section class="page photo-page" data-page="5">
-          <div class="page-head"><span>建军的新自行车</span><span>第一章</span></div>
-          <div class="body">
-            <figure class="float-photo">
-              <img src="../../assets/ch01/historical/bicyclists-1987.jpg" alt="1987年中国城市自行车人流">
-              <figcaption>1987，中国城市自行车人流。GeorgeLouis / BeenAroundAWhile，CC BY-SA 3.0。作为80年代城市公共空间的视觉证据。</figcaption>
-            </figure>
-            <div class="copy">
-              <p>上午十点多，你出门去书店。走到百货商店附近，有人在后面按了两下车铃。</p>
-              <p class="short">“哎！”</p>
-              <p>你回头，看见建军。你差一点没认出来。</p>
-              <p>他骑着一辆很新的自行车，车漆亮得刺眼，后座上还捆着一个鼓鼓囊囊的旅行包。更显眼的是他的衣服。你记得上一次见他，他还穿一件洗得有点发白的蓝夹克，现在身上换成了一件深色外套，式样你在本地商店里很少见。</p>
-              <p class="short">“新车？”你摸了摸车把。</p>
-              <p class="short">“嗯。”</p>
-              <p class="short">“哪来的？”</p>
-              <p class="short">“买的呗。”</p>
-              <p>他哈哈大笑，把车推到路边。你们进了一家小饭馆，坐下以后，他从旅行包里掏出一件女士上衣，让你摸面料。</p>
-              <p class="short">“怎么样？”</p>
-              <p class="short">“我又不穿这个。”</p>
-              <p class="short">“你看样式。”</p>
-              <p>样式确实比本地柜台上的衣服新。</p>
-            </div>
-          </div>
-          <div class="page-foot"><span>正文 + 史料照片</span><b>05</b></div>
-        </section>
+  <div class="page-head"><span>建军的新自行车</span><span>第一章</span></div>
+  <div class="body">
+    <figure class="float-photo">
+      <img src="../../assets/ch01/historical/bicyclists-1987.jpg" alt="1987年中国城市自行车人流">
+      <figcaption>1987，中国城市自行车人流。GeorgeLouis / BeenAroundAWhile，CC BY-SA 3.0。作为80年代城市公共空间的视觉证据。</figcaption>
+    </figure>
+    <div class="copy">
+      <p>他哈哈大笑，把车推到路边。你们进了一家小饭馆，坐下以后，他从旅行包里掏出一件女士上衣，让你摸面料。</p>
+      <p class="short">“怎么样？”</p>
+      <p class="short">“我又不穿这个。”</p>
+      <p class="short">“你看样式。”</p>
+      <p>样式确实比本地柜台上的衣服新。</p>
+      <p>“广州那边这种东西多得很。”他说，“拿回来就有人要。”</p>
+      <p class="short">“你最近总去广州？”</p>
+      <p class="short">“去过两次。下一次说不定去深圳。”</p>
+      <p>你第一次认真听他说“深圳”。这个地名你当然知道，但它在你脑子里还不是后来那座高楼密布的城市。它更像报纸上的一个词，一个很远、很热、听说“政策不一样”的地方。</p>
+      <p class="short">你问：“真能挣很多？”</p>
+      <p>建军夹起一口菜：“够花。”</p>
+      <p class="short">“到底多少？”</p>
+      <p>他还是不说。</p>
+      <p class="short">“怕我借钱？”</p>
+      <p>“不是。”他笑了一下，过了一会儿却忽然认真起来，“其实我也不知道能干多久。”</p>
+      <p class="short">“什么意思？”</p>
+      <p>“今天让你卖，明天呢？谁知道。货会不会压手里，钱能不能回来，也没人管你。你以为我不怕？”</p>
+      <p>这句话让你有点意外。从他那辆新自行车和那件漂亮夹克上，你看到的是一个突然发了财的老同学。可他自己看到的，是一种你父亲绝不会接受的生活：这个月可能挣很多，下个月也许一分钱没有。</p>
+      <p class="short">“那你还干？”</p>
+      <p class="short">“有钱挣为什么不干？”</p>
+    </div>
+  </div>
+  <div class="page-foot"><span>正文 + 史料照片 · 同一末行</span><b>05</b></div>
+</section>
 
         <section class="page editorial-page" data-page="6">
-          <div class="page-head"><span>夜里十一点</span><span>第一章</span></div>
-          <div class="body">
-            <figure class="editorial-figure">
-              <img src="../../assets/ch01/generated/four-paths-1985-v4.avif" alt="1985年夜读书桌与四种人生选择的场景复原图">
-              <figcaption>场景复原图｜工作证、广州地址、夜大学材料、TOEFL与航空信。画面用于组织叙事，不是历史现场照片。</figcaption>
-            </figure>
-            <div class="copy">
-              <p>回到房间以后，你把桌上的东西重新摆了一遍。</p>
-              <p>最左边是父亲单位的工作证。旁边压着建军留给你的广州地址。小梅塞给你的夜大学材料被折成了三折。最右边是志强借给你的TOEFL资料和那封从美国寄回来的航空信。</p>
-              <p>你盯着它们看了一会儿。</p>
-              <p>它们其实没有任何关系。只是恰好在同一天，都摆到了你的桌上。</p>
-              <p>可你忽然觉得，它们像四个方向。</p>
-              <p><strong>工作证</strong>意味着一条父亲非常熟悉的路：毕业、进单位、工资、住房、结婚、慢慢过日子。</p>
-              <p><strong>广州地址</strong>意味着另一种生活：市场、赚钱、不确定性，以及过去很少有人会主动选择的风险。</p>
-              <p><strong>夜大学材料</strong>代表的是小梅的愿望：在一份已经稳定下来的生活里，再给自己争取一次改变的机会。</p>
-              <p>而那本TOEFL资料和航空信，则把你的目光一下拉到了地图外面。</p>
-              <p>你第一次意识到：过去很多年轻人的一生，更像一道已经预留了答案的填空题。现在，它开始变成一道选择题。</p>
-            </div>
-          </div>
-          <div class="page-foot"><span>正文 + 编辑插图</span><b>06</b></div>
-        </section>
+  <div class="page-head"><span>夜里十一点</span><span>第一章</span></div>
+  <div class="body">
+    <figure class="editorial-figure">
+      <img src="../../assets/ch01/generated/four-paths-1985-v4.avif" alt="1985年夜读书桌与四种人生选择的场景复原图">
+      <figcaption>场景复原图｜工作证、广州地址、夜大学材料、TOEFL与航空信。画面用于组织叙事，不是历史现场照片。</figcaption>
+    </figure>
+    <div class="copy">
+      <p>回到房间以后，你把桌上的东西重新摆了一遍。</p>
+      <p>最左边是父亲单位的工作证。旁边压着建军留给你的广州地址。小梅塞给你的夜大学材料被折成了三折。最右边是志强借给你的TOEFL资料和那封从美国寄回来的航空信。</p>
+      <p>你盯着它们看了一会儿。</p>
+      <p>它们其实没有任何关系。只是恰好在同一天，都摆到了你的桌上。</p>
+      <p>可你忽然觉得，它们像四个方向。</p>
+      <p><strong class="keyword">工作证</strong>意味着一条父亲非常熟悉的路：毕业、进单位、工资、住房、结婚、慢慢过日子。</p>
+      <p><strong class="keyword">广州地址</strong>意味着另一种生活：市场、赚钱、不确定性，以及过去很少有人会主动选择的风险。</p>
+      <p><strong class="keyword">夜大学材料</strong>代表的是小梅的愿望：在一份已经稳定下来的生活里，再给自己争取一次改变的机会。</p>
+      <p>而那本<strong class="keyword">TOEFL资料和航空信</strong>，则把你的目光一下拉到了地图外面。</p>
+      <p>你原来并不觉得这是什么问题。两年前考上大学的时候，父亲很高兴，亲戚也说你“以后不用愁了”。你自己也是这样想的。</p>
+      <p>大学毕业以后自然会有一个去处，然后工作、结婚、分房，像周围的大多数成年人一样生活。</p>
+      <p>那是一张已经画好了大致路线的地图。</p>
+      <p>可是现在，地图外面好像突然多出了很多地方。</p>
+      <p>广州。深圳。美国。</p>
+      <p>甚至还有一种更难说清楚的东西——按照自己的想法生活。</p>
+      <p>你第一次意识到：过去很多年轻人的一生，更像一道已经预留了答案的填空题。现在，它开始变成一道选择题。</p>
+    </div>
+  </div>
+  <div class="page-foot"><span>正文 + 编辑插图 · 关键词留白</span><b>06</b></div>
+</section>
 
       </div>
     </div>
@@ -261,7 +382,7 @@ body{
 <script>
 (()=>{
   const pages=[...document.querySelectorAll('.page')];
-  const names=['扉页','场景起始页','普通连续正文页','正文 + 时代旁注','正文 + 史料照片','正文 + 编辑插图'];
+  const names=['扉页','场景起始页','连续正文页','正文 + 底部旁注','正文 + 史料照片','正文 + 编辑插图'];
   let i=0,lock=false;
   const cur=document.getElementById('current');
   const name=document.getElementById('pageName');
