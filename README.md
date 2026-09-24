@@ -24,6 +24,7 @@
 6. [七个基础问题决议 / 后续考据清单](book/open-questions.md)
 7. [七个硬节点场景图 V0.1](book/scene-map-hard-nodes-v0.1.md)
 8. [桥接事件 A/B/C 分级 V0.1](book/bridge-scene-grading-v0.1.md)
+9. [正式章节结构 V0.1（工作版）](book/chapter-structure-v0.1.md)
 
 旧版五部30章结构已归档：
 [outline-v0.1-topic-structure.md](book/archive/outline-v0.1-topic-structure.md)
@@ -53,7 +54,8 @@
 - 七个硬节点场景图：V0.1 已建立，共36个核心场景。
 - 桥接事件 A/B/C 分级：V0.1 已建立，新增11个A级完整场景。
 - 当前完整场景总量：**47场**。
-- 当前工作：对47个完整场景做接力顺序与章节聚合，形成正式章节结构 V0.1。
+- 章节结构：V0.1 工作版已形成，当前暂聚合为 **22章**（不锁定）。
+- 当前工作：通过关键章节试写验证开篇抓力、群像切换和小梅独立纽约线。
 
 ## 旧第一章
 
