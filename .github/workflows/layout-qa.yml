@@ -1,0 +1,40 @@
+name: Chapter Layout QA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - "assets/**"
+      - "scripts/**"
+      - ".github/workflows/layout-qa.yml"
+  workflow_dispatch:
+
+jobs:
+  chapter-layout-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check local assets
+        run: python scripts/check-local-assets.py
+
+      - name: Render chapter and run DOM layout QA
+        id: layout
+        continue-on-error: true
+        run: python scripts/render-layout-review.py web/ch01/index.html
+
+      - name: Upload layout review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch01-layout-review
+          path: artifacts/layout-review/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Fail if layout QA failed
+        if: steps.layout.outcome == 'failure'
+        run: exit 1
