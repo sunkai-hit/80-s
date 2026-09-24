@@ -41,7 +41,7 @@ def free_port():
 def run_browser(browser, args):
     base = [browser, "--headless=new", "--disable-gpu", "--no-sandbox",
             "--hide-scrollbars", "--window-size=1280,1400",
-            "--virtual-time-budget=2600"]
+            "--virtual-time-budget=5000"]
     return subprocess.run(base + args, capture_output=True, text=True, timeout=40)
 
 def main():
@@ -66,11 +66,21 @@ def main():
     url = f"http://127.0.0.1:{port}/{quote(rel)}?qa=1"
 
     try:
-        dom = run_browser(browser, ["--dump-dom", url]).stdout
-        m = re.search(r'id="totalPages"[^>]*>(\d+)<', dom)
-        if not m:
-            raise SystemExit("无法取得总页数；页面可能没有完成排版。")
-        total = int(m.group(1))
+        dumped = run_browser(browser, ["--dump-dom", url])
+        dom = dumped.stdout
+        (out / "dump.html").write_text(dom, encoding="utf-8")
+
+        m = re.search(r'id="totalPages"[^>]*>\s*(\d+)\s*<', dom)
+        if m:
+            total = int(m.group(1))
+        else:
+            # Fallback: dynamic readers may render page nodes correctly even
+            # when the counter text is not serialized in the expected form.
+            total = len(re.findall(r'class="[^"]*\bbook-page\b[^"]*"', dom))
+
+        if total <= 0:
+            print(dumped.stderr)
+            raise SystemExit("无法取得总页数；已保存 artifacts/layout-review/.../dump.html 供排查。")
 
         qa = []
         q = re.search(r'<script id="layoutQaData" type="application/json">([\s\S]*?)</script>', dom)
@@ -79,6 +89,8 @@ def main():
                 qa = json.loads(q.group(1))
             except Exception:
                 qa = [{"type":"qa-json-parse-failed"}]
+        else:
+            qa = [{"type":"qa-data-missing"}]
 
         for i in range(1, total + 1):
             png = out / f"{i:03d}.png"
