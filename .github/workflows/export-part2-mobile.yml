@@ -1,0 +1,91 @@
+name: Export Part II Mobile Editions
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/export-part2-mobile.yml"
+      - "scripts/export_part2_mobile.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: export-part2-mobile
+  cancel-in-progress: false
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - name: Checkout canonical novel sources
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build EPUB, DOCX and single-file HTML
+        run: |
+          python -m pip install --upgrade python-docx
+          python scripts/export_part2_mobile.py | tee /tmp/part2-build.json
+
+      - name: Render DOCX and check document pages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libreoffice-writer fonts-noto-cjk poppler-utils
+          python -m pip install --upgrade pymupdf
+          mkdir -p /tmp/part2-render
+          libreoffice -env:UserInstallation=file:///tmp/lo-part2-$GITHUB_RUN_ID \
+            --headless --convert-to pdf \
+            --outdir /tmp/part2-render \
+            exports/no-spoilers-china-part2-mobile.docx
+          test -s /tmp/part2-render/no-spoilers-china-part2-mobile.pdf
+          python - <<'PY'
+          import fitz
+          from pathlib import Path
+          p = Path('/tmp/part2-render/no-spoilers-china-part2-mobile.pdf')
+          pdf = fitz.open(p)
+          assert 8 <= len(pdf) <= 80, len(pdf)
+          for i, page in enumerate(pdf):
+              lines = [line.strip() for line in page.get_text().splitlines() if line.strip()]
+              assert lines, f"Blank rendered page {i + 1}"
+              rect=page.rect
+              for block in page.get_text('blocks'):
+                  if block[6] != 0 or not block[4].strip():
+                      continue
+                  x0,y0,x1,y1=block[:4]
+                  assert -1 <= x0 <= x1 <= rect.width+1, (i, block)
+                  assert -1 <= y0 <= y1 <= rect.height+1, (i, block)
+          print(f"PASS: rendered {len(pdf)} pages, nonempty, blocks within page bounds")
+          PY
+          pdfinfo /tmp/part2-render/no-spoilers-china-part2-mobile.pdf | grep Pages
+
+      - name: Commit finalized mobile reading editions
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            exports/no-spoilers-china-part2-mobile.epub \
+            exports/no-spoilers-china-part2-mobile.docx \
+            exports/no-spoilers-china-part2-mobile.html
+          if git diff --cached --quiet; then
+            echo "Mobile exports already up-to-date."
+          else
+            git commit -m "Publish Part II mobile-friendly EPUB DOCX HTML editions [skip ci]"
+            git push origin HEAD:main
+          fi
+
+      - name: Attach mobile book editions
+        uses: actions/upload-artifact@v4
+        with:
+          name: novel-part2-mobile
+          path: |
+            exports/no-spoilers-china-part2-mobile.epub
+            exports/no-spoilers-china-part2-mobile.docx
+            exports/no-spoilers-china-part2-mobile.html
+          if-no-files-found: error
+          retention-days: 30
