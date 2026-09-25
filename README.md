@@ -108,3 +108,5 @@
 - 正式顺序写作已启动：**第1章《回来》V1.0 已完成**，正文位于 `chapters/ch01-reboot/manuscript-v1.0.md`；下一章进入《照相》。
 
 - 第2章《照相》V1.0 已完成，正文位于 `chapters/ch02/manuscript-v1.0.md`；下一章进入《工号》。
+
+- 第3章《工号》V1.0 已完成，正文位于 `chapters/ch03/manuscript-v1.0.md`；下一章进入《信》。
