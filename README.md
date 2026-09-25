@@ -112,3 +112,5 @@
 - 第3章《工号》V1.0 已完成，正文位于 `chapters/ch03/manuscript-v1.0.md`；下一章进入《信》。
 
 - 第4章《信》V1.0 已完成，正文位于 `chapters/ch04/manuscript-v1.0.md`；时间轴已校正为1980年初，下一章进入《以后》。
+
+- 第5章《以后》V1.0 已完成，正文位于 `chapters/ch05/manuscript-v1.0.md`；ER-A01“大学宿舍文化夜”已正式回收。下一章进入《摊位》。
