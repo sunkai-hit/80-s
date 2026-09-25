@@ -355,14 +355,17 @@ def create_epub(book: list[dict]) -> Path:
 
 def validate(book: list[dict], epub: Path, docx: Path, web: Path):
     read_doc = Document(docx)
-    doc_pars = [p.text for p in read_doc.paragraphs]
-    for x in book:
-        assert x["heading"] in doc_pars, x["heading"]
+    pars = list(read_doc.paragraphs)
+    doc_pars = [p.text for p in pars]
+    chapter_indices = [i for i, p in enumerate(pars) if p.style.name == "Heading 1"]
+    assert len(chapter_indices) == len(book), chapter_indices
+    for idx, x in enumerate(book):
         expected = [b["text"] if b["type"] == "paragraph" else "＊　＊　＊"
                     for b in x["blocks"]]
-        i = doc_pars.index(x["heading"])
-        end = next((j for j in range(i+1,len(doc_pars))
-                    if doc_pars[j].startswith("第") and "章　" in doc_pars[j]), len(doc_pars))
+        i = chapter_indices[idx]
+        assert doc_pars[i] == x["heading"], (i, x["heading"])
+        end = (chapter_indices[idx+1] if idx+1 < len(chapter_indices)
+               else len(doc_pars))
         actual = doc_pars[i+1:end]
         assert actual == expected, (x["number"],len(expected),len(actual))
     assert web.stat().st_size > 30000
