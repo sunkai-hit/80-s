@@ -110,3 +110,5 @@
 - 第2章《照相》V1.0 已完成，正文位于 `chapters/ch02/manuscript-v1.0.md`；下一章进入《工号》。
 
 - 第3章《工号》V1.0 已完成，正文位于 `chapters/ch03/manuscript-v1.0.md`；下一章进入《信》。
+
+- 第4章《信》V1.0 已完成，正文位于 `chapters/ch04/manuscript-v1.0.md`；时间轴已校正为1980年初，下一章进入《以后》。
