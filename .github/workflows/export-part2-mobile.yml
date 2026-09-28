@@ -7,6 +7,8 @@ on:
     paths:
       - ".github/workflows/export-part2-mobile.yml"
       - "scripts/export_part2_mobile.py"
+      - "chapters/ch0[7-9]/manuscript-v1.0.md"
+      - "chapters/ch10/manuscript-v1.0.md"
 
 permissions:
   contents: write
