@@ -1,0 +1,79 @@
+name: Export Chapter 9-10 Rhythm Trial Mobile
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/export-ch09-ch10-trial.yml"
+      - "scripts/export_ch09_ch10_trial.py"
+      - "chapters/ch09/experiments/manuscript-v1.1-natural-rhythm.md"
+      - "chapters/ch10/experiments/manuscript-v1.1-natural-rhythm.md"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ch09-ch10-trial-export
+  cancel-in-progress: false
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate reflowable EPUB, mobile DOCX, and local HTML trial
+        run: |
+          python -m pip install --upgrade python-docx
+          python scripts/export_ch09_ch10_trial.py
+
+      - name: Check mobile DOCX rendering
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libreoffice-writer fonts-noto-cjk poppler-utils
+          python -m pip install --upgrade pymupdf
+          mkdir -p /tmp/trial-render
+          libreoffice -env:UserInstallation=file:///tmp/lo-trial-$GITHUB_RUN_ID \
+            --headless --convert-to pdf --outdir /tmp/trial-render \
+            exports/no-spoilers-china-ch09-ch10-rhythm-trial-mobile.docx
+          python - <<'PY'
+          from pathlib import Path
+          import fitz
+          p=Path('/tmp/trial-render/no-spoilers-china-ch09-ch10-rhythm-trial-mobile.pdf')
+          assert p.exists() and p.stat().st_size > 10000
+          f=fitz.open(p)
+          assert 6 <= len(f) <= 45, len(f)
+          pages=[page.get_text() for page in f]
+          assert all(x.strip() for x in pages), "blank pages"
+          assert any("第九章" in x for x in pages)
+          assert any("第十章" in x for x in pages)
+          print(f"Render PASS: {len(f)} nonempty pages")
+          PY
+
+      - name: Publish separate preview exports
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            exports/no-spoilers-china-ch09-ch10-rhythm-trial-mobile.epub \
+            exports/no-spoilers-china-ch09-ch10-rhythm-trial-mobile.docx \
+            exports/no-spoilers-china-ch09-ch10-rhythm-trial-mobile.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish alternate mobile reading preview for ch09–10 [skip ci]"
+            git push origin HEAD:main
+          fi
+
+      - name: Attach trial mobile formats
+        uses: actions/upload-artifact@v4
+        with:
+          name: ch09-10-rhythm-trial-mobile
+          path: |
+            exports/no-spoilers-china-ch09-ch10-rhythm-trial-mobile.epub
+            exports/no-spoilers-china-ch09-ch10-rhythm-trial-mobile.docx
+            exports/no-spoilers-china-ch09-ch10-rhythm-trial-mobile.html
+          if-no-files-found: error
