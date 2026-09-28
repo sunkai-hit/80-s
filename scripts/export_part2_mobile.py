@@ -32,6 +32,9 @@ CHAPTERS = [
     (10, "十", "远路"),
 ]
 
+CHAPTER_LABEL = "第七—十章"
+EPUB_ID = "urn:uuid:no-spoilers-china-part2-2026"
+
 EPUB_CSS = """
 @charset "utf-8";
 html { writing-mode: horizontal-tb; }
@@ -183,7 +186,7 @@ def create_web(book: list[dict]) -> Path:
 <button id="theme" aria-label="切换明暗主题">◐</button>
 </div></header>
 <main id="home"><div class="book-cover"><p class="subtitle">1978—1995</p>
-<h1>{BOOK_TITLE}</h1><p class="subtitle">{PART_TITLE} · 第七—十章</p></div>
+<h1>{BOOK_TITLE}</h1><p class="subtitle">{PART_TITLE} · {CHAPTER_LABEL}</p></div>
 <nav class="contents" aria-label="章节目录"><h2>目 录</h2><ol>{nav}</ol></nav>
 {chapters}<footer>《没有剧透的中国》 · 第二部分 · 完</footer></main>
 <script>{script}</script></body></html>"""
@@ -235,7 +238,7 @@ def create_docx(book: list[dict]) -> Path:
     sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
     sub.paragraph_format.first_line_indent = Pt(0)
     sub.paragraph_format.space_before = Pt(22)
-    run = sub.add_run(PART_TITLE + "  ·  第七—十章")
+    run = sub.add_run(PART_TITLE + "  ·  " + CHAPTER_LABEL)
     run.font.size = Pt(12)
     run.font.color.rgb = RGBColor(108, 103, 98)
 
@@ -302,7 +305,7 @@ def create_epub(book: list[dict]) -> Path:
     files["OEBPS/styles/reader.css"] = EPUB_CSS
     files["OEBPS/text/cover.xhtml"] = xhtml(
         BOOK_TITLE, f'<section class="cover"><h1>{BOOK_TITLE}</h1>'
-                    f'<p>{PART_TITLE}</p><p>第七—十章</p></section>'
+                    f'<p>{PART_TITLE}</p><p>{CHAPTER_LABEL}</p></section>'
     )
     nav_links = []
     item_entries = [
@@ -336,7 +339,7 @@ def create_epub(book: list[dict]) -> Path:
         head + '<package xmlns="http://www.idpf.org/2007/opf" version="3.0" '
         'unique-identifier="book-id" xml:lang="zh-CN">'
         '<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">'
-        '<dc:identifier id="book-id">urn:uuid:no-spoilers-china-part2-2026</dc:identifier>'
+        f'<dc:identifier id="book-id">{EPUB_ID}</dc:identifier>'
         f'<dc:title>{BOOK_TITLE}｜{PART_TITLE}</dc:title>'
         '<dc:language>zh-CN</dc:language>'
         f'<meta property="dcterms:modified">{timestamp}</meta>'
